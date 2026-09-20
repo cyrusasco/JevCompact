@@ -1,0 +1,7 @@
+node_modules/
+*.log
+*.pre-jev.bak
+*.compact.jsonl
+.env
+.DS_Store
+Thumbs.db

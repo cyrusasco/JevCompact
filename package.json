@@ -1,0 +1,19 @@
+{
+  "name": "jevcompact",
+  "version": "1.0.0",
+  "description": "Lossless session compaction for Claude Code, Codex and ZCode — Jev keep/drop decisions plus a Chinese-optimized lossless policy. No paraphrasing, no hallucinated summaries, no distribution of lost context.",
+  "license": "MIT",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "bin": { "jevcompact": "bin/jevcompact.mjs", "jvc": "bin/jevcompact.mjs" },
+  "exports": {
+    "./policy": "./lib/policy.mjs",
+    "./claude": "./lib/claude.mjs",
+    "./codex": "./lib/codex.mjs",
+    "./mcp": "./lib/mcp-server.mjs"
+  },
+  "files": ["bin", "lib", "skills", "docs", "README.md", "LICENSE", "NOTICE.md"],
+  "keywords": ["compaction", "context", "claude-code", "codex", "zcode", "chinese", "中文", "lossless", "jev", "typesafe", "mcp"],
+  "dependencies": {},
+  "repository": { "type": "git", "url": "git+https://github.com/cyrusasco/JevCompact.git" }
+}
