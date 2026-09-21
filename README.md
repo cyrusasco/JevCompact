@@ -87,6 +87,10 @@ mkdir -p ~/.zcode/skills && cp -r skills/jevcompact ~/.zcode/skills/
 # host-only bonus: compact a live session directly from its database:
 node bin/jevcompact.mjs --session <id|prefix|live>          # dry run
 node bin/jevcompact.mjs --session <id|prefix|live> --apply  # in-place, verified backup first
+node bin/jevcompact.mjs --session live --apply --min-reduction 0.02 --max-state-tokens 25000
+# long sessions never fail "history too large": the host partitions the transcript into
+# windows that each stay inside --max-state-tokens. A guarded refusal, or a plan whose
+# reduction falls below --min-reduction, is a BENIGN skip (exit 0, nothing written) — not a failure.
 ```
 
 ## Usage
@@ -161,6 +165,10 @@ JevCompact is built so that nothing of your sessions can travel with it:
 - **Calibration.** The classifier is trained mostly on English agent trajectories; for CJK
   sessions the shipped default `--threshold 0.6` is the sorted order of safety. Run dry
   first, read the decisions.
+- **Capacity.** The host path (`--session`) partitions the transcript into windows sized
+  under the classifier's per-request state budget, so session length is no longer bounded
+  by the 25k-token state wall (measured: case 10 in `docs/EVIDENCE.md`). The file-format
+  paths still run against the single-request budget and raise "history too large" beyond it.
 - **Roadmap:** session-type detection (auto `--pin-last`), semantic final-report pinning by
   querying the verifier per call, more localization (simplified-Chinese patterns are in the
   repository's issue list, pull requests welcome — see `docs/EVIDENCE.md` for the

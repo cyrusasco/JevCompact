@@ -1,8 +1,8 @@
 # Evidence
 
 Every claim in the README is backed here: the protocol, the numbers, the figures and the
-reproduction commands. All data are from a benchmark run of nine real sessions and all
-measurements are real, where relevant. The source sessions are private archives of the
+reproduction commands. All data are from a benchmark run of nine real sessions plus one
+capacity case, and all measurements are real, where relevant. The source sessions are private archives of the
 author's machine; **nothing of their contents is distributed with this repository** — this
 document quotes counts only. The CI gate (`npm run verify`) scans every file shipped and
 rejects the distribution if any identifier of the corpus leaks.
@@ -79,6 +79,25 @@ duplicates whose newest revision is kept, and nothing that a continuation would 
 Of the 34 kept, 31 were reinstated by the policy against the verifier's drop
 recommendations. The pruned 60 contained no goal, correction, issue-memory or critical
 entity — hence a lower keep share with a higher keep of the things that matter.
+
+## Case 10 — the capacity wall, and windowed compaction
+
+The nine tables above measure *losslessness* — what survives compaction. A tenth case
+measures *capacity* — how large a session may grow before compaction itself gives up. The
+fixture is a frozen, read-only pre-compaction snapshot of a production session (3012
+messages, 2680 paired tool calls) whose conversation skeleton alone needs ~162k tokens
+while the classifier's per-request state budget is 25k.
+
+| assertion | result |
+|---|---|
+| unwindowed single-request path | fails exactly as the library documents: `history too large for Jev (~161939 tokens after truncation, limit 25000)` |
+| windowed production path | **56/56 windows classified, 0 refused**; 65 requests; per-request state 12468–24647 tokens — every request inside the 25000 budget |
+| decision coverage | **2680/2680** paired calls received exactly one keep/drop decision — no dangling, no doubled, no out-of-window decision |
+| pass criteria | structural invariants only — the remote verdicts are probabilistic, so asserting exact per-call label reproduction across runs would make the regression flaky |
+| plan review | the design was put to the verifier itself before implementation: 7 questions × 3 reps, unanimous (read-only fixture, dry-run only, structural criteria) |
+
+The case runs inside the benchmark harness as `--mega` and is emitted by `npm run data`
+into `docs/data/bench-results.json → capacity` (numeric fields only).
 
 ## Reproduce
 

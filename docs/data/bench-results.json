@@ -651,5 +651,22 @@
    "pruned": 60,
    "reinstated": 31
   }
+ },
+ "capacity": {
+  "label": "case-10",
+  "kind": "capacity",
+  "verdict": "PASS",
+  "messages": 3012,
+  "paired_calls": 2680,
+  "unwindowed_throws": true,
+  "state_budget_tokens": 25000,
+  "windows": 56,
+  "classified": 56,
+  "refused": 0,
+  "requests": 65,
+  "decisions": 2680,
+  "numbered": 2680,
+  "state_tokens_min": 12468,
+  "state_tokens_max": 24647
  }
 }

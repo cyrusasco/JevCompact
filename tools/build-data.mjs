@@ -51,7 +51,11 @@ const arm = (a, isJev) => a ? ({
   ...(isJev ? { dropped: num(a.callsDropped), classified: num(a.callsClassified) } : {}),
 }) : null;
 
-const dirs = fs.existsSync(SRC) ? fs.readdirSync(SRC).filter((d) => fs.existsSync(path.join(SRC, d, "report.json"))).sort() : [];
+const allDirs = fs.existsSync(SRC) ? fs.readdirSync(SRC).filter((d) => fs.existsSync(path.join(SRC, d, "report.json"))).sort() : [];
+// the capacity regression (case 10, bench --mega) has its own schema — keep it out of
+// the positional nine and publish it as its own numeric block below
+const CAPACITY_DIR = "m10-mega";
+const dirs = allDirs.filter((d) => d !== CAPACITY_DIR);
 const cases = dirs.map((d, i) => {
   const rep = JSON.parse(fs.readFileSync(path.join(SRC, d, "report.json"), "utf8"));
   return {
@@ -82,6 +86,25 @@ if (dirs[0]) {
   audit = { case: cases[0]?.label ?? null, tools: [...by.values()].sort((a, b) => b.calls - a.calls), totals };
 }
 
+/* case 10 — the capacity wall (windowed compaction regression). Numeric fields only:
+   no fixture name, no session identity, no excerpt goes in. */
+let capacity = null;
+if (allDirs.includes(CAPACITY_DIR)) {
+  try {
+    const cap = JSON.parse(fs.readFileSync(path.join(SRC, CAPACITY_DIR, "report.json"), "utf8"));
+    const b = cap.assertionB ?? {};
+    capacity = {
+      label: "case-10", kind: "capacity", verdict: cap.verdict ?? null,
+      messages: cap.shape?.messages ?? null, paired_calls: cap.shape?.pairedCalls ?? null,
+      unwindowed_throws: !cap.assertionA?.resolved && /history too large/.test(String(cap.assertionA?.error ?? "")),
+      state_budget_tokens: cap.config?.maxStateTokens ?? null,
+      windows: b.windows ?? null, classified: b.classified ?? null, refused: b.failed ?? null,
+      requests: b.requests ?? null, decisions: b.decisions ?? null, numbered: b.numbered ?? null,
+      state_tokens_min: b.stateTokensMin ?? null, state_tokens_max: b.stateTokensMax ?? null,
+    };
+  } catch { /* no fixture on this machine — publish without the capacity block */ }
+}
+
 const out = {
   meta: {
     generated: new Date().toISOString().slice(0, 10),
@@ -95,6 +118,7 @@ const out = {
   },
   cases,
   audit_case_anatomy: audit,
+  capacity,
 };
 fs.mkdirSync(path.join(ROOT, "docs", "data"), { recursive: true });
 fs.writeFileSync(path.join(ROOT, "docs", "data", "bench-results.json"), JSON.stringify(out, null, 1) + "\n");

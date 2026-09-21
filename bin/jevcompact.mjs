@@ -31,6 +31,14 @@
  *   --no-policy             omit the lossless policy (NOT recommended: the bare classifier is
  *                           free to drop the evidence a continuation cites — see docs/EVIDENCE.md)
  *   --goal=TEXT             what the session was about (passed to the classifier as state)
+ *   --min-reduction=T       host mode only: a computed reduction below T is a BENIGN skip
+ *                           (printed, exit 0, nothing written) — the lossless policy found
+ *                           nothing worth pruning; not a failure (default 0.05)
+ *   --max-state-tokens=N    host mode only: the classifier's per-request state budget. A
+ *                           session whose skeleton alone exceeds it is compacted window by
+ *                           window, so long sessions never fail "history too large" (default 25000)
+ *   --max-request-tokens=N  host mode only: full request budget including the question
+ *                           batch (default 30000)
  *   --key=KEY               TypeSafe API key; otherwise $TYPESAFE_API_KEY, .env,
  *                           ~/.claude/settings.json "env" block — the key is never logged
  *
@@ -50,7 +58,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 
 /* ------------------------------------------------------------------ argv */
 function parseArgs(argv) {
-  const opts = { files: [], apply: false, inPlace: false, format: "auto", threshold: 0.6, keep: 6, head: 300, pinLast: "critical", policy: true, session: null, restore: null, key: null, goal: null };
+  const opts = { files: [], apply: false, inPlace: false, format: "auto", threshold: 0.6, keep: 6, head: 300, pinLast: "critical", policy: true, session: null, restore: null, key: null, goal: null, minReduction: 0.05, maxStateTokens: 25000, maxRequestTokens: 30000 };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (!a.startsWith("--")) { opts.files.push(a); continue; }
@@ -67,6 +75,9 @@ function parseArgs(argv) {
       case "pin-last": opts.pinLast = val; break;
       case "no-policy": opts.policy = false; break;
       case "goal": opts.goal = val; break;
+      case "min-reduction": opts.minReduction = Number(val); break;
+      case "max-state-tokens": opts.maxStateTokens = Number(val); break;
+      case "max-request-tokens": opts.maxRequestTokens = Number(val); break;
       case "key": opts.key = val; break;
       case "session": opts.session = argv[++i]; break;
       case "restore": opts.restore = argv[++i]; break;
@@ -77,7 +88,11 @@ function parseArgs(argv) {
   return opts;
 }
 function usage() {
-  console.log(fs.readFileSync(HERE + "/.." + "/bin/jevcompact.mjs", "utf8").split("\n").slice(4, 40).map((l) => l.replace(/^ ?\*? ?/, "")).join("\n"));
+  // print from the "Usage:" marker to the end of the header comment — survives header growth
+  const lines = fs.readFileSync(HERE + "/.." + "/bin/jevcompact.mjs", "utf8").split("\n");
+  const from = lines.findIndex((l) => l.includes("Usage:"));
+  const to = lines.findIndex((l) => /^\s*\*\//.test(l));
+  console.log(lines.slice(from < 0 ? 4 : from, to < 0 ? 40 : to).map((l) => l.replace(/^ ?\*? ?/, "")).join("\n"));
 }
 
 /* ------------------------------------------------------------- key handling */
@@ -159,9 +174,14 @@ async function main() {
     try { mod = await import("../lib/zcode-jve.mjs"); } catch (e) { console.error(`--session requires a ZCode host (node >= 22 with node:sqlite and the ~/.zcode database): ${e.message}`); return 5; }
     const r = await mod.compactZcodeSession(opts.session, {
       apply: opts.apply, keep: opts.keep, threshold: opts.threshold, truncateHead: opts.head, policy: opts.policy, goal: opts.goal ?? undefined,
+      minReduction: opts.minReduction, maxStateTokens: opts.maxStateTokens, maxRequestTokens: opts.maxRequestTokens,
       log: (m) => console.log(`[${opts.session}] ${m}`),
     });
-    if (!r.ok) { console.error(`FAILED: ${r.error}`); return 5; }
+    if (!r.ok) {
+      // a benign refusal (liveness guard, or a plan the policy judged worthless) is a skip, not a failure
+      if (r.benign) { console.log(`SKIP (benign): ${r.error}`); return 0; }
+      console.error(`FAILED: ${r.error}`); return 5;
+    }
     return 0;
   }
 
