@@ -6,13 +6,19 @@
   "type": "module",
   "engines": { "node": ">=22" },
   "bin": { "jevcompact": "bin/jevcompact.mjs", "jvc": "bin/jevcompact.mjs" },
+  "scripts": {
+    "data": "node tools/build-data.mjs",
+    "charts": "node tools/make-charts.mjs",
+    "verify": "node tools/verify-clean.mjs",
+    "prepush": "node tools/verify-clean.mjs"
+  },
   "exports": {
     "./policy": "./lib/policy.mjs",
     "./claude": "./lib/claude.mjs",
     "./codex": "./lib/codex.mjs",
     "./mcp": "./lib/mcp-server.mjs"
   },
-  "files": ["bin", "lib", "skills", "docs", "README.md", "LICENSE", "NOTICE.md"],
+  "files": ["bin", "lib", "skills", "docs", "tools", "README.md", "LICENSE", "NOTICE.md"],
   "keywords": ["compaction", "context", "claude-code", "codex", "zcode", "chinese", "中文", "lossless", "jev", "typesafe", "mcp"],
   "dependencies": {},
   "repository": { "type": "git", "url": "git+https://github.com/cyrusasco/JevCompact.git" }

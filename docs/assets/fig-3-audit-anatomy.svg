@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="226" font-family="DejaVu Sans, Verdana, sans-serif" font-size="12.5" role="img" aria-label="Fig. 3 — Inside case-01: 94 tool calls, the classifier proposed pruning and the policy reinstated what was evidence">
+<rect width="780" height="226" fill="#fff"/>
+<text x="132" y="24" font-size="15" font-weight="bold" fill="#222">Fig. 3 — Inside case-01: 94 tool calls, the classifier proposed pruning and the policy reinstated what was evidence</text>
+<text x="132" y="41" fill="#666">calls  ·  proposed pruned (duplicates/coordination)  ·  reinstated by policy (final evidence) — scale 0..79%</text>
+<line x1="132" y1="50" x2="132" y2="188" stroke="#ddd"/>
+<text x="132" y="202" text-anchor="middle" fill="#888">0</text>
+<line x1="279" y1="50" x2="279" y2="188" stroke="#ddd"/>
+<text x="279" y="202" text-anchor="middle" fill="#888">19.75</text>
+<line x1="426" y1="50" x2="426" y2="188" stroke="#ddd"/>
+<text x="426" y="202" text-anchor="middle" fill="#888">39.5</text>
+<line x1="573" y1="50" x2="573" y2="188" stroke="#ddd"/>
+<text x="573" y="202" text-anchor="middle" fill="#888">59.25</text>
+<line x1="720" y1="50" x2="720" y2="188" stroke="#ddd"/>
+<text x="720" y="202" text-anchor="middle" fill="#888">79</text>
+<text x="124" y="69" text-anchor="end" fill="#222">exec</text>
+<rect x="132" y="56" width="588.0" height="12" fill="#9db7d9"/>
+<text x="725.0" y="66" fill="#555">79</text>
+<rect x="132" y="72" width="357.3" height="12" fill="#d98f8f"/>
+<text x="494.3" y="82" fill="#555">48</text>
+<rect x="132" y="88" width="215.8" height="12" fill="#8fbf9f"/>
+<text x="352.8" y="98" fill="#555">29</text>
+<text x="124" y="103" text-anchor="end" fill="#222">wait_agent</text>
+<rect x="132" y="90" width="37.2" height="12" fill="#9db7d9"/>
+<text x="174.2" y="100" fill="#555">5</text>
+<rect x="132" y="106" width="37.2" height="12" fill="#d98f8f"/>
+<text x="174.2" y="116" fill="#555">5</text>
+<rect x="132" y="122" width="0.0" height="12" fill="#8fbf9f"/>
+<text x="137.0" y="132" fill="#555">0</text>
+<text x="124" y="137" text-anchor="end" fill="#222">wait</text>
+<rect x="132" y="124" width="29.8" height="12" fill="#9db7d9"/>
+<text x="166.8" y="134" fill="#555">4</text>
+<rect x="132" y="140" width="14.9" height="12" fill="#d98f8f"/>
+<text x="151.9" y="150" fill="#555">2</text>
+<rect x="132" y="156" width="7.4" height="12" fill="#8fbf9f"/>
+<text x="144.4" y="166" fill="#555">1</text>
+<text x="124" y="171" text-anchor="end" fill="#222">list_agents</text>
+<rect x="132" y="158" width="22.3" height="12" fill="#9db7d9"/>
+<text x="159.3" y="168" fill="#555">3</text>
+<rect x="132" y="174" width="14.9" height="12" fill="#d98f8f"/>
+<text x="151.9" y="184" fill="#555">2</text>
+<rect x="132" y="190" width="7.4" height="12" fill="#8fbf9f"/>
+<text x="144.4" y="200" fill="#555">1</text>
+<text x="132" y="214" font-size="11" fill="#777">totals — calls 94, in-effect pruned 60 (all proven-safe: superseded re-runs and team coordination traffic), policy-reinstated 31 final results.</text>
+</svg>

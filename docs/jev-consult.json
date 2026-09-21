@@ -1,0 +1,17 @@
+{
+  "method": "TypeSafe System One (model jev-latest), one question per call, three repetitions per question, medians reported; the question set was put to the verifier in the general form of the policy invariants, without any information about the sessions on which the benchmark was run",
+  "date": "2026-09-21",
+  "questions": [
+    { "id": "r1", "statement": "the goal statement of a session must be preserved verbatim by any compaction", "type": "noul", "median": 0.94 },
+    { "id": "r2", "statement": "user correction rounds of a debug loop are high-value and must never be dropped", "type": "noul", "median": 0.94 },
+    { "id": "r3", "statement": "assistant records stating why a previous attempt failed are high-value evidence for the next rounds of the loop", "type": "noul", "median": 0.95 },
+    { "id": "r4", "statement": "dropping the only surviving copy of a command's final result causes the continuation to hallucinate or re-ask", "type": "noul", "median": 0.81 },
+    { "id": "r5", "statement": "an LLM summary alone, without verbatim preservation, is sufficient to continue a long correction loop without a handover", "type": "noul", "median": 0.03 },
+    { "id": "r6", "statement": "a keep/drop classifier should be allowed to rewrite user conversation text to save space", "type": "noul", "median": 0.07 },
+    { "id": "r7", "statement": "which single measure most raises the chance that a compacted session continues without a handover", "type": "choice", "votes": { "pinEvidence": 3 }, "confidence": 0.25 },
+    { "id": "r8", "statement": "storage risk of force-keeping the last result of every distinct command line on re-run heavy sessions", "type": "score", "median": 0.95, "scale": "0-10" },
+    { "id": "r9", "statement": "with the policy layered over the classifier, a compacted session can continue without any manual handover document", "type": "noul", "median": 0.86 },
+    { "id": "r10", "statement": "the last-result pin should apply only where the result carries critical evidence (tallies, hashes, errors, build verdicts)", "type": "noul", "median": 0.75 },
+    { "id": "r11", "statement": "preferred pinning regime for sessions dominated by a long correction loop over a small part of a big goal", "type": "choice", "votes": { "pinAll": 3 }, "confidence": 0.59, "note": "contrary to r8 and r10; outvoted by them, the two being the stronger grounds - shipped default pinLast=critical, with always available behind the --pin-last flag" }
+  ]
+}

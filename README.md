@@ -112,6 +112,47 @@ Formats read: Claude Code project JSONL, Codex rollouts (session_meta / response
 compacted boundary honoured), ZCode model-io rollouts, inline `Message[]` JSON. The library
 is in `lib/`; every routine in `bin/jevcompact.mjs` maps back to a documented option.
 
+## The evidence
+
+Everything the README claims is measured, and the measurement is published: nine archived
+sessions (18–77 MiB, the author's own, shipped nowhere), two arms, six dimensions, all
+figures from the data.
+
+| document | contents |
+|---|---|
+| [`docs/EVIDENCE.md`](docs/EVIDENCE.md) | protocol, the nine-session table, the anatomy of the audit session, reproduction commands |
+| [`docs/IMPROVEMENT-PLAN.md`](docs/IMPROVEMENT-PLAN.md) | the two failure modes, the eleven-question consultation, the three invariants |
+| [`docs/jev-consult.json`](docs/jev-consult.json) | the consultation in full — questions, repetitions, medians |
+| [`docs/data/bench-results.json`](docs/data/bench-results.json) | the data file every figure is built from |
+
+![Fig. 1 — context kept after compaction, nine sessions](docs/assets/fig-1-keep-ratio.svg)
+
+![Fig. 2 — continuation-readiness score, max 90](docs/assets/fig-2-scores.svg)
+
+![Fig. 3 — anatomy of the audit session: what was pruned, what the policy reinstated](docs/assets/fig-3-audit-anatomy.svg)
+
+Figures are dependency-free SVG generated from the data file — `npm run data && npm run
+charts` regenerates them; `npm run verify` is the gate described below.
+
+## Privacy — what ships, and what never leaves your machine
+
+JevCompact is built so that nothing of your sessions can travel with it:
+
+- **nothing of a session is ever sent anywhere but the classification request.** The only
+  network operation in the whole package is the keep/drop query to *your own* TypeSafe
+  endpoint over TLS, authenticated by *your own* key (`--key=`, `$TYPESAFE_API_KEY`,
+  `.env`, `~/.claude/settings.json`); the key is never logged, never written to disk, never
+  echoed in a report. No telemetry, no update checks, no third-party calls.
+- **the repository itself is the proof.** The corpus — the nine sessions behind every
+  figure — lives on the author's machine and is distributed with nothing. The published
+  documents quote counts only. The CI gate `npm run verify` scans the entire distribution
+  for identifiers of the corpus (session ids, local paths, drive letters, commit hashes,
+  project names, key material, pasted conversation text) and fails the build on its first
+  finding — so a leak is not merely discouraged, it is unbuildable.
+- **on your machine, compaction is reversible by construction.** Dry run is the default;
+  `--apply` never touches the input unless `--in-place`, and `--in-place` keeps a
+  verified `.pre-jev.bak` that `--restore` puts back.
+
 ## Limitations and future work
 
 - **Compression vs. losslessness.** On sessions dominated by a long correction loop, the

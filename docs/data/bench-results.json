@@ -1,0 +1,655 @@
+{
+ "meta": {
+  "generated": "2026-09-21",
+  "protocol": "bench protocol v2 — identical clamped input both arms; ground truth mined from the input itself",
+  "note": "numeric-only aggregates; source sessions are private and never distributed; see tools/build-data.mjs"
+ },
+ "summary": {
+  "normal": {
+   "anchors_recall_pct": 30,
+   "corrections_retained_pct": 41,
+   "critical_evidence_kept_pct": 71,
+   "fabrications_total": 45,
+   "handover_free_cases": 0,
+   "mean_kept_ratio": 0.035
+  },
+  "jev_bare": {
+   "anchors_recall_pct": 100,
+   "corrections_retained_pct": 100,
+   "critical_evidence_kept_pct": 9,
+   "fabrications_total": 0,
+   "handover_free_cases": 0,
+   "mean_kept_ratio": 0.362
+  },
+  "jev_with_policy": {
+   "anchors_recall_pct": 100,
+   "corrections_retained_pct": 100,
+   "critical_evidence_kept_pct": 100,
+   "fabrications_total": 0,
+   "handover_free_cases": 9,
+   "mean_kept_ratio": 0.946
+  }
+ },
+ "cases": [
+  {
+   "label": "case-01",
+   "round": 1,
+   "domain": "audit-log",
+   "size_mib": 76.7,
+   "wall_clock_s": {
+    "normal": 334,
+    "jev": 1.5
+   },
+   "normal": {
+    "kept": 0.02351869642790303,
+    "anchors": [
+     9,
+     22
+    ],
+    "corrections": [
+     6,
+     9
+    ],
+    "user_instructions": [
+     11,
+     18
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     22,
+     28
+    ],
+    "fabrications": 9
+   },
+   "policy": {
+    "kept": 0.7556750552096719,
+    "anchors": [
+     22,
+     22
+    ],
+    "corrections": [
+     9,
+     9
+    ],
+    "user_instructions": [
+     18,
+     18
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     28,
+     28
+    ],
+    "fabrications": 0,
+    "dropped": 60,
+    "classified": 94
+   },
+   "scores": {
+    "policy": null
+   }
+  },
+  {
+   "label": "case-02",
+   "round": 1,
+   "domain": "long-build-debug",
+   "size_mib": 43.6,
+   "wall_clock_s": {
+    "normal": 328,
+    "jev": 1.6
+   },
+   "normal": {
+    "kept": 0.025319585157364006,
+    "anchors": [
+     6,
+     23
+    ],
+    "corrections": [
+     7,
+     17
+    ],
+    "user_instructions": [
+     16,
+     55
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     12,
+     14
+    ],
+    "fabrications": 5
+   },
+   "policy": {
+    "kept": 0.9981545346255754,
+    "anchors": [
+     23,
+     23
+    ],
+    "corrections": [
+     17,
+     17
+    ],
+    "user_instructions": [
+     55,
+     55
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     14,
+     14
+    ],
+    "fabrications": 0,
+    "dropped": 2,
+    "classified": 17
+   },
+   "scores": {
+    "policy": null
+   }
+  },
+  {
+   "label": "case-03",
+   "round": 1,
+   "domain": "long-build-debug",
+   "size_mib": 31.7,
+   "wall_clock_s": {
+    "normal": 265,
+    "jev": 1.9
+   },
+   "normal": {
+    "kept": 0.017906838473721813,
+    "anchors": [
+     4,
+     23
+    ],
+    "corrections": [
+     5,
+     17
+    ],
+    "user_instructions": [
+     8,
+     55
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     6,
+     15
+    ],
+    "fabrications": 4
+   },
+   "policy": {
+    "kept": 0.9287373780271501,
+    "anchors": [
+     23,
+     23
+    ],
+    "corrections": [
+     17,
+     17
+    ],
+    "user_instructions": [
+     55,
+     55
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     15,
+     15
+    ],
+    "fabrications": 0,
+    "dropped": 10,
+    "classified": 27
+   },
+   "scores": {
+    "policy": null
+   }
+  },
+  {
+   "label": "case-04",
+   "round": 2,
+   "domain": "long-build-debug",
+   "size_mib": 31,
+   "wall_clock_s": {
+    "normal": 300,
+    "jev": 1.4
+   },
+   "normal": {
+    "kept": 0.031849922429464744,
+    "anchors": [
+     8,
+     23
+    ],
+    "corrections": [
+     6,
+     17
+    ],
+    "user_instructions": [
+     10,
+     56
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     15,
+     18
+    ],
+    "fabrications": 4
+   },
+   "policy": {
+    "kept": 0.9497679229180481,
+    "anchors": [
+     23,
+     23
+    ],
+    "corrections": [
+     17,
+     17
+    ],
+    "user_instructions": [
+     56,
+     56
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     18,
+     18
+    ],
+    "fabrications": 0,
+    "dropped": 12,
+    "classified": 47
+   },
+   "scores": {
+    "policy": null
+   }
+  },
+  {
+   "label": "case-05",
+   "round": 2,
+   "domain": "long-build-debug",
+   "size_mib": 31,
+   "wall_clock_s": {
+    "normal": 330,
+    "jev": 1.5
+   },
+   "normal": {
+    "kept": 0.037131500400959985,
+    "anchors": [
+     6,
+     23
+    ],
+    "corrections": [
+     8,
+     17
+    ],
+    "user_instructions": [
+     13,
+     55
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     13,
+     22
+    ],
+    "fabrications": 3
+   },
+   "policy": {
+    "kept": 0.9517255754571957,
+    "anchors": [
+     23,
+     23
+    ],
+    "corrections": [
+     17,
+     17
+    ],
+    "user_instructions": [
+     55,
+     55
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     22,
+     22
+    ],
+    "fabrications": 0,
+    "dropped": 8,
+    "classified": 35
+   },
+   "scores": {
+    "policy": null
+   }
+  },
+  {
+   "label": "case-06",
+   "round": 2,
+   "domain": "long-build-debug",
+   "size_mib": 26.4,
+   "wall_clock_s": {
+    "normal": 310,
+    "jev": 1.4
+   },
+   "normal": {
+    "kept": 0.02970398391949761,
+    "anchors": [
+     6,
+     23
+    ],
+    "corrections": [
+     7,
+     17
+    ],
+    "user_instructions": [
+     10,
+     52
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     14,
+     14
+    ],
+    "fabrications": 3
+   },
+   "policy": {
+    "kept": 1,
+    "anchors": [
+     23,
+     23
+    ],
+    "corrections": [
+     17,
+     17
+    ],
+    "user_instructions": [
+     52,
+     52
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     14,
+     14
+    ],
+    "fabrications": 0,
+    "dropped": 0,
+    "classified": 27
+   },
+   "scores": {
+    "policy": null
+   }
+  },
+  {
+   "label": "case-07",
+   "round": 3,
+   "domain": "long-build-debug",
+   "size_mib": 25.2,
+   "wall_clock_s": {
+    "normal": 300,
+    "jev": 2.3
+   },
+   "normal": {
+    "kept": 0.04316710845755006,
+    "anchors": [
+     4,
+     23
+    ],
+    "corrections": [
+     7,
+     19
+    ],
+    "user_instructions": [
+     13,
+     57
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     6,
+     10
+    ],
+    "fabrications": 3
+   },
+   "policy": {
+    "kept": 0.9953675311576611,
+    "anchors": [
+     23,
+     23
+    ],
+    "corrections": [
+     19,
+     19
+    ],
+    "user_instructions": [
+     57,
+     57
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     10,
+     10
+    ],
+    "fabrications": 0,
+    "dropped": 1,
+    "classified": 12
+   },
+   "scores": {
+    "policy": null
+   }
+  },
+  {
+   "label": "case-08",
+   "round": 3,
+   "domain": "long-build-debug",
+   "size_mib": 24.4,
+   "wall_clock_s": {
+    "normal": 320,
+    "jev": 1.5
+   },
+   "normal": {
+    "kept": 0.06791916009264376,
+    "anchors": [
+     6,
+     23
+    ],
+    "corrections": [
+     8,
+     19
+    ],
+    "user_instructions": [
+     15,
+     57
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     5,
+     7
+    ],
+    "fabrications": 8
+   },
+   "policy": {
+    "kept": 0.9748110090880233,
+    "anchors": [
+     23,
+     23
+    ],
+    "corrections": [
+     19,
+     19
+    ],
+    "user_instructions": [
+     57,
+     57
+    ],
+    "failure_causes": [
+     0,
+     0
+    ],
+    "critical": [
+     7,
+     7
+    ],
+    "fabrications": 0,
+    "dropped": 2,
+    "classified": 12
+   },
+   "scores": {
+    "policy": null
+   }
+  },
+  {
+   "label": "case-09",
+   "round": 3,
+   "domain": "multi-agent-orchestration",
+   "size_mib": 18.4,
+   "wall_clock_s": {
+    "normal": 607,
+    "jev": 2.3
+   },
+   "normal": {
+    "kept": 0.03652699240974885,
+    "anchors": [
+     13,
+     23
+    ],
+    "corrections": [
+     4,
+     8
+    ],
+    "user_instructions": [
+     12,
+     35
+    ],
+    "failure_causes": [
+     0,
+     8
+    ],
+    "critical": [
+     15,
+     24
+    ],
+    "fabrications": 6
+   },
+   "policy": {
+    "kept": 0.9616795831472977,
+    "anchors": [
+     23,
+     23
+    ],
+    "corrections": [
+     8,
+     8
+    ],
+    "user_instructions": [
+     35,
+     35
+    ],
+    "failure_causes": [
+     8,
+     8
+    ],
+    "critical": [
+     24,
+     24
+    ],
+    "fabrications": 0,
+    "dropped": 33,
+    "classified": 77
+   },
+   "scores": {
+    "policy": null
+   }
+  }
+ ],
+ "audit_case_anatomy": {
+  "case": "case-01",
+  "tools": [
+   {
+    "tool": "exec",
+    "calls": 79,
+    "kept": 31,
+    "pruned": 48,
+    "reinstated": 29
+   },
+   {
+    "tool": "wait_agent",
+    "calls": 5,
+    "kept": 0,
+    "pruned": 5,
+    "reinstated": 0
+   },
+   {
+    "tool": "wait",
+    "calls": 4,
+    "kept": 2,
+    "pruned": 2,
+    "reinstated": 1
+   },
+   {
+    "tool": "list_agents",
+    "calls": 3,
+    "kept": 1,
+    "pruned": 2,
+    "reinstated": 1
+   },
+   {
+    "tool": "send_message",
+    "calls": 2,
+    "kept": 0,
+    "pruned": 2,
+    "reinstated": 0
+   },
+   {
+    "tool": "followup_task",
+    "calls": 1,
+    "kept": 0,
+    "pruned": 1,
+    "reinstated": 0
+   }
+  ],
+  "totals": {
+   "calls": 94,
+   "kept": 34,
+   "pruned": 60,
+   "reinstated": 31
+  }
+ }
+}
