@@ -12,6 +12,10 @@
  *   jevcompact <file>... [options]                 compaction of transcript files
  *   jevcompact --session <id|prefix|live> [options] compaction of a ZCode session (host only)
  *   jevcompact --restore <file>                     restore a file from its .pre-jev.bak
+ *   jevcompact studio                               start the local host GUI (Jve Studio, http://127.0.0.1:50505/)
+ *   jevcompact studio install-desktop [--autostart] put the "Jve Studio" icon on the real Desktop
+ *                                                 (+ register logon autostart, hidden window)
+ *   jevcompact studio --remove-desktop              take the icon (and the autostart stub) back out
  *
  * Options:
  *   --apply                 write the output (default: dry run — the plan is printed,
@@ -53,6 +57,7 @@ import { resolveApiKey } from "../lib/mcp-server.mjs";
 import { mineSets, applyPolicy, rebuildFromDecisions } from "../lib/policy.mjs";
 import { claudeToMessages, rewriteTranscript as claudeRewrite } from "../lib/claude.mjs";
 import { readRollout, codexToMessages, rewriteRollout as codexRewrite } from "../lib/codex.mjs";
+import { spawn } from "node:child_process";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
@@ -156,8 +161,28 @@ function reportOne(file, msgs, result, pinned, outChars) {
 }
 
 /* ------------------------------------------------------------------- run */
+/* --------------------------------------------------------------- studio host */
+async function studioCommand(rest) {
+  const HERE_DIR = path.dirname(fileURLToPath(import.meta.url));
+  const sub = rest[0];
+  if (sub === "install-desktop" || sub === "--remove-desktop" || rest.includes("install-desktop") || rest.includes("--remove-desktop")) {
+    const args = rest.filter((a) => a !== "install-desktop");
+    const r = spawn(process.execPath, [path.join(HERE_DIR, "..", "tools", "install-desktop.mjs"), ...args], { stdio: "inherit" });
+    return await new Promise((res) => r.on("exit", (c) => res(c ?? 0)));
+  }
+  // bare `studio` — run the server in this terminal; Ctrl-C stops it. For a window that
+  // survives closing the agent app, use the Desktop icon (install-desktop above).
+  console.log("Jve Studio — local compaction host. Press Ctrl-C to stop. For a detached");
+  console.log("server that survives closing this window, install the Desktop icon:");
+  console.log("  node bin/jevcompact.mjs studio install-desktop --autostart\n");
+  const r = spawn(process.execPath, [path.join(HERE_DIR, "..", "lib", "jve-studio-app.mjs"), ...rest.filter((a) => a.startsWith("--"))], { stdio: "inherit" });
+  return await new Promise((res) => r.on("exit", (c) => res(c ?? 0)));
+}
+
 async function main() {
-  const opts = parseArgs(process.argv.slice(2));
+  const raw = process.argv.slice(2);
+  if (raw[0] === "studio") return studioCommand(raw.slice(1));
+  const opts = parseArgs(raw);
   if (opts.restore) {
     const bak = opts.restore + ".pre-jev.bak";
     if (!fs.existsSync(bak)) { console.error(`no backup for ${opts.restore} (expected ${bak})`); return 1; }

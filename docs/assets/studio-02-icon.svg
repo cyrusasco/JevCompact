@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="330" viewBox="0 0 860 330" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="860" height="330" rx="10" fill="#1b4e8c"/>
+  <text x="24" y="30" fill="#cfe4ff" font-size="13" font-family="Consolas, monospace">Step 2 — one double-click, any time (the agent app can be closed)</text>
+  <!-- icon tile -->
+  <rect x="40" y="70" width="96" height="80" rx="8" fill="#0f1721" stroke="#5bd46a" stroke-width="3"/>
+  <rect x="58" y="86" width="60" height="42" rx="4" fill="none" stroke="#9fd2ff" stroke-width="2"/>
+  <text x="88" y="113" fill="#5bd46a" font-size="16" text-anchor="middle" font-family="Consolas, monospace">JV</text>
+  <rect x="64" y="132" width="48" height="6" rx="3" fill="#2c5c9c"/>
+  <text x="88" y="172" fill="#ffffff" font-size="13" text-anchor="middle">Jve Studio</text>
+  <!-- cursor -->
+  <path d="M118 140 l0 26 l6 -6 l4 9 l5 -2 l-4 -9 l8 -1 z" fill="#ffffff" stroke="#101820" stroke-width="1"/>
+  <text x="140" y="150" fill="#ffe9a3" font-size="13" font-family="Consolas, monospace">double-click</text>
+  <!-- arrow to browser -->
+  <path d="M250 110 C 340 60, 420 60, 470 96" fill="none" stroke="#5bd46a" stroke-width="3" marker-end="url(#ah)"/>
+  <defs><marker id="ah" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0 L9 3 L0 6 z" fill="#5bd46a"/></marker></defs>
+  <!-- browser mock -->
+  <rect x="480" y="60" width="356" height="240" rx="10" fill="#f4f7fb" stroke="#101820"/>
+  <rect x="480" y="60" width="356" height="30" rx="10" fill="#dfe7f0"/>
+  <rect x="494" y="66" width="326" height="18" rx="9" fill="#ffffff" stroke="#b9c7d6"/>
+  <text x="504" y="80" fill="#1b4e8c" font-size="12" font-family="Consolas, monospace">http://127.0.0.1:50505/</text>
+  <text x="500" y="122" fill="#26313d" font-size="13" font-family="Consolas, monospace">Jve Studio — local compaction host</text>
+  <rect x="500" y="136" width="316" height="1" fill="#c7d2de"/>
+  <rect x="500" y="150" width="120" height="24" rx="5" fill="#1b4e8c"/>
+  <text x="560" y="167" fill="#ffffff" font-size="12" text-anchor="middle">harness: zcode ▾</text>
+  <rect x="640" y="150" width="86" height="24" rx="5" fill="#157a3c"/>
+  <text x="683" y="167" fill="#ffffff" font-size="12" text-anchor="middle">Sync</text>
+  <text x="500" y="205" fill="#48586a" font-size="12" font-family="Consolas, monospace">the server outlives the terminal it was born in —</text>
+  <text x="500" y="226" fill="#48586a" font-size="12" font-family="Consolas, monospace">close ZCode / Claude Code / your shell, the Studio</text>
+  <text x="500" y="247" fill="#48586a" font-size="12" font-family="Consolas, monospace">keeps answering on port 50505.</text>
+  <text x="500" y="284" fill="#7b8a99" font-size="11" font-family="Consolas, monospace">clicking the icon again is safe: a second copy exits quietly</text>
+</svg>

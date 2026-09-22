@@ -93,6 +93,36 @@ node bin/jevcompact.mjs --session live --apply --min-reduction 0.02 --max-state-
 # reduction falls below --min-reduction, is a BENIGN skip (exit 0, nothing written) — not a failure.
 ```
 
+## The local host — Jve Studio (Desktop GUI)
+
+命令行之外，日常最舒服的姿势是用桌面圖示：**Jve Studio** — a zero-dependency local web
+server (Node only, bound to `127.0.0.1:50505`, never anything else) that turns the browser
+into the compaction control panel: Sync → Dry run → Compact → Restore, with a central
+audit Log and a per-session context-window breakdown.
+
+```sh
+node bin/jevcompact.mjs studio install-desktop --autostart   # one command: Desktop icon + logon warm-up
+node bin/jevcompact.mjs studio                               # or run the host in this terminal
+node bin/jevcompact.mjs studio --remove-desktop              # take both back out
+```
+
+The icon starts the host **detached** — it outlives your terminal and outlives the agent
+app itself, so you can compact an idle long-running session at any time without keeping
+anything open. Re-clicking is idempotent (a second server copy exits quietly). Windows
+launcher resolution follows the shell API, so a OneDrive-redirected Desktop is placed on
+your real Desktop, not on the `%USERPROFILE%` dummy path.
+
+| 步驟 | 圖 |
+|---|---|
+| 1 install once · 一行裝安裝 | ![install](docs/assets/studio-01-install.svg) |
+| 2 double-click · 單擊啟動 | ![icon](docs/assets/studio-02-icon.svg) |
+| 3 the panel · 控制面板 | ![panel](docs/assets/studio-03-ui.svg) |
+| 4 the pipeline · 安全流水 | ![flow](docs/assets/studio-04-flow.svg) |
+
+Full illustrated manual: **[docs/GUIDE.md](docs/GUIDE.md)** — every press, every
+safety net (dry-run default, verified backup before write, liveness guards, benign
+skips, windowed compaction for long sessions) explained end to end.
+
 ## Usage
 
 ```sh

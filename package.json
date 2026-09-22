@@ -10,13 +10,17 @@
     "data": "node tools/build-data.mjs",
     "charts": "node tools/make-charts.mjs",
     "verify": "node tools/verify-clean.mjs",
-    "prepush": "node tools/verify-clean.mjs"
+    "prepush": "node tools/verify-clean.mjs",
+    "studio": "node lib/jve-studio-app.mjs",
+    "desktop": "node tools/install-desktop.mjs"
   },
   "exports": {
     "./policy": "./lib/policy.mjs",
     "./claude": "./lib/claude.mjs",
     "./codex": "./lib/codex.mjs",
-    "./mcp": "./lib/mcp-server.mjs"
+    "./mcp": "./lib/mcp-server.mjs",
+    "./studio": "./lib/jve-studio-app.mjs",
+    "./zcode": "./lib/zcode-jve.mjs"
   },
   "files": ["bin", "lib", "skills", "docs", "tools", "README.md", "LICENSE", "NOTICE.md"],
   "keywords": ["compaction", "context", "claude-code", "codex", "zcode", "chinese", "中文", "lossless", "jev", "typesafe", "mcp"],

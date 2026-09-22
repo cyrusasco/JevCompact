@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="300" viewBox="0 0 860 300" font-family="Consolas, Menlo, monospace">
+  <rect width="860" height="300" rx="10" fill="#0f1721"/>
+  <rect width="860" height="34" rx="10" fill="#1c2733"/>
+  <circle cx="20" cy="17" r="6" fill="#ff5f56"/><circle cx="42" cy="17" r="6" fill="#ffbd2e"/><circle cx="64" cy="17" r="6" fill="#27c93f"/>
+  <text x="430" y="22" fill="#8fa3b7" font-size="13" text-anchor="middle">Step 1 — install the Desktop icon (once)</text>
+  <text x="24" y="66" fill="#e8eef4" font-size="14">C:\&gt; cd %USERPROFILE%\my-checkouts\JevCompact</text>
+  <text x="24" y="94" fill="#e8eef4" font-size="14">C:\&gt; node bin/jevcompact.mjs studio install-desktop --autostart</text>
+  <text x="24" y="128" fill="#5bd46a" font-size="14">installed desktop launcher (.bat)      → …\Desktop\Jve Studio.bat</text>
+  <text x="24" y="152" fill="#5bd46a" font-size="14">installed logon autostart (VBS)        → …\Programs\Startup\JveStudio-Autostart.vbs</text>
+  <text x="24" y="186" fill="#9fb3c8" font-size="14">Double-click the Jve Studio icon: the host starts detached (it survives</text>
+  <text x="24" y="208" fill="#9fb3c8" font-size="14">closing the terminal / the agent app) and your browser opens http://127.0.0.1:50505/</text>
+  <text x="24" y="232" fill="#9fb3c8" font-size="14">Pick a harness, press Sync, then Dry run before any Compact.</text>
+  <text x="24" y="268" fill="#546a80" font-size="13">note: the icon also works WITHOUT --autostart — autostart only pre-warms the server at logon.</text>
+</svg>

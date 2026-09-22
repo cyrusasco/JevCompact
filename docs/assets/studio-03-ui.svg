@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="420" viewBox="0 0 860 420" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="860" height="420" rx="10" fill="#f4f7fb" stroke="#101820"/>
+  <rect width="860" height="34" rx="10" fill="#dfe7f0"/>
+  <text x="20" y="23" fill="#1b4e8c" font-size="13" font-family="Consolas, monospace">http://127.0.0.1:50505/ — Jve Studio</text>
+  <text x="836" y="23" fill="#5f7184" font-size="12" text-anchor="end" font-family="Consolas, monospace">step 3 — the whole flow is three presses</text>
+  <!-- toolbar -->
+  <rect x="16" y="48" width="150" height="30" rx="6" fill="#ffffff" stroke="#1b4e8c"/>
+  <text x="28" y="68" font-size="13" fill="#26313d">harness  zcode ▾</text>
+  <rect x="180" y="48" width="104" height="30" rx="6" fill="#157a3c"/>
+  <text x="232" y="68" font-size="13" fill="#ffffff" text-anchor="middle">Sync 同步</text>
+  <rect x="300" y="48" width="92" height="30" rx="6" fill="#eef3f8" stroke="#b9c7d6"/>
+  <text x="346" y="68" font-size="13" fill="#26313d" text-anchor="middle">Log 日志</text>
+  <text x="836" y="68" font-size="11" fill="#7b8a99" text-anchor="end" font-family="Consolas, monospace">synthetic demo data — not a real session</text>
+  <!-- table header -->
+  <rect x="16" y="92" width="828" height="28" fill="#e7eef5"/>
+  <text x="28" y="111" font-size="12" fill="#48586a" font-family="Consolas, monospace">SESSION</text>
+  <text x="190" y="111" font-size="12" fill="#48586a" font-family="Consolas, monospace">TITLE</text>
+  <text x="430" y="111" font-size="12" fill="#48586a" font-family="Consolas, monospace">SIZE</text>
+  <text x="560" y="111" font-size="12" fill="#48586a" font-family="Consolas, monospace">STATE</text>
+  <text x="700" y="111" font-size="12" fill="#48586a" font-family="Consolas, monospace">ACTIONS</text>
+  <!-- rows -->
+  <g font-family="Consolas, monospace" font-size="12">
+    <text x="28" y="146" fill="#26313d">sess-demo-0001</text><text x="190" y="146" fill="#26313d">refactor auth module</text><text x="430" y="146" fill="#26313d">42.1 MB ▸ 1204 parts</text><text x="560" y="146" fill="#157a3c">compactable</text>
+    <rect x="700" y="130" width="64" height="24" rx="5" fill="#ffffff" stroke="#1b4e8c"/><text x="732" y="147" fill="#1b4e8c" text-anchor="middle">Dry run</text>
+    <rect x="772" y="130" width="66" height="24" rx="5" fill="#157a3c"/><text x="805" y="147" fill="#ffffff" text-anchor="middle">Compact</text>
+
+    <text x="28" y="186" fill="#26313d">sess-demo-0002</text><text x="190" y="186" fill="#26313d">fix flaky integration test</text><text x="430" y="186" fill="#26313d">11.6 MB ▸ 356 parts</text><text x="560" y="186" fill="#b25b00">below floor — skip</text>
+    <rect x="700" y="170" width="64" height="24" rx="5" fill="#ffffff" stroke="#1b4e8c"/><text x="732" y="187" fill="#1b4e8c" text-anchor="middle">Dry run</text>
+    <rect x="772" y="170" width="66" height="24" rx="5" fill="#157a3c"/><text x="805" y="187" fill="#ffffff" text-anchor="middle">Compact</text>
+
+    <text x="28" y="226" fill="#26313d">sess-demo-0003</text><text x="190" y="226" fill="#26313d">docs: refresh readme</text><text x="430" y="226" fill="#26313d">87.0 MB ▸ 2201 parts</text><text x="560" y="226" fill="#1b4e8c">compacted 09:14</text>
+    <rect x="700" y="210" width="64" height="24" rx="5" fill="#ffffff" stroke="#1b4e8c"/><text x="732" y="227" fill="#1b4e8c" text-anchor="middle">Dry run</text>
+    <rect x="772" y="210" width="66" height="24" rx="5" fill="#8c1b1b"/><text x="805" y="227" fill="#ffffff" text-anchor="middle">Restore</text>
+  </g>
+  <!-- context breakdown popover hint -->
+  <rect x="16" y="256" width="828" height="1" fill="#c7d2de"/>
+  <text x="28" y="284" font-size="12" fill="#48586a">click the SIZE cell to open the context-window breakdown (same shape as the agent app's own panel)</text>
+  <!-- three-press protocol legend -->
+  <g font-family="Consolas, monospace" font-size="12">
+    <rect x="28" y="308" width="804" height="26" rx="6" fill="#e7eef5"/>
+    <text x="40" y="326" fill="#26313d">1 press [Dry run] first — the plan is printed, nothing is written (default, safe on live sessions)</text>
+    <rect x="28" y="340" width="804" height="26" rx="6" fill="#e9f5ec"/>
+    <text x="40" y="358" fill="#145a26">2 press [Compact] — a verified pre-compaction backup is written first; only then are rows pruned</text>
+    <rect x="28" y="372" width="804" height="26" rx="6" fill="#f7e9e9"/>
+    <text x="40" y="390" fill="#7a1414">3 [Restore] any time — replays the newest backup; the pruned state stays restorable forever</text>
+  </g>
+</svg>
