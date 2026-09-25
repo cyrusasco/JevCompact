@@ -87,3 +87,29 @@ Formats read: Claude Code JSONL (`~/.claude/projects/*/*.jsonl`), Codex rollouts
 - The classifier's training is English-heavy; the shipped defaults are sorted for CJK
   safety, not for maximum compression.
 - Exit codes: 0 success, 1 usage error, 2 key/API error, 5 host transaction error.
+
+
+## v1.1 — opt-in passes and the round-2/3 corrections
+
+- `--dedup` collapses exact duplicate tool results (newest copy survives); `--trim-carriers`
+  releases rows kept solely as protected-entity carriers when the entity stays covered;
+  `--bookkeeping` clears stale `readFileState.content` bodies (newest snapshot per path
+  stays; older bodies remain recoverable from the paired pre-apply backup).
+- Strong I2: every `policy:pin-*` row (final-state AND goal/correction/cause evidence) is
+  exempt from the extra passes. The one-carrier-per-entity selection is a separate, weaker
+  scheme audited on its own (A3); `A6` is split into I2 (pins kept) and I3 (last-of-group
+  results kept); `A3` reports the protected-entity total alongside the uncovered count.
+- All byte accounting is UTF-8 (`Buffer.byteLength`), denominators declared per measure;
+  the two console measures (whole-record LOAD vs output+display PAYLOAD) are published
+  side by side and the classification threshold applies to the LOAD measure.
+- Every new apply persists a per-call decision ledger (`<backup>.ledger.json`, schema 1:
+  t ID → callID → part IDs, Jev scores, prior_reason trail, SQL change sets, sha256).
+  Runs predating it are aggregate-only (insufficient data).
+- The reference arm is the proxy summariser (`claude -p --model sonnet`), not the platform
+  `/compact`; its `fabricated` figure is a token-presence count.
+- Two-arm study (6 archived sessions, 6/6 guarantees green): R1 ledger-type sessions
+  compact 61–80 % with 100 % anchor recall and 0 fabrications; R2 console-type reach the
+  policy floor 10–14 % (extra passes add 0 — measured); the proxy summariser compresses
+  harder (~96–98 %) but keeps only 4–14 % of anchors and introduces 8–15 tokens not in
+  the source. Single-file claim: byte-reconstructable only as the sealed set
+  (session + paired backup + ledger).

@@ -146,6 +146,45 @@ Formats read: Claude Code project JSONL, Codex rollouts (session_meta / response
 compacted boundary honoured), ZCode model-io rollouts, inline `Message[]` JSON. The library
 is in `lib/`; every routine in `bin/jevcompact.mjs` maps back to a documented option.
 
+## v1.1 — opt-in passes, the round-2/3 corrections
+
+Three explicit flags extend the same lossless contract (they only ever turn drop rows;
+text is still never rewritten):
+
+| flag | effect |
+|---|---|
+| `--dedup` | retained rows whose `(tool, normalized result)` collide with a LATER kept row drop out; the newest copy survives. Strong I2: every `policy:pin-*` row (final-state AND goal/correction/cause evidence) is exempt from all extra passes. |
+| `--trim-carriers` | a row kept SOLELY as an entity carrier drops when every protected entity it mentions stays carried elsewhere; the carrier-selection scheme (rarity first, recency tie-break) is a SEPARATE, weaker guarantee audited on its own (A3). |
+| `--bookkeeping` | clears stale `readFileState.content` bodies (only the newest snapshot per path is ever consulted); path/revisionId/mtime/size stay. Older bodies remain recoverable from the paired pre-apply backup (`.ledger.json` beside it carries the change sets). |
+
+Round-2/3 audit corrections landed with v1.1: all byte accounting is **UTF-8**
+(`Buffer.byteLength`) with the metric denominators declared per measure; the judgement
+payload folds `metadata.display` (bounded at 4096 chars) so the console-family majority
+of the payload is visible to the classifier; `A6` is split into **I2** (every policy pin
+kept) and **I3** (last-of-group results kept); `A3` reports the protected-entity total
+alongside the uncovered pair; the per-call decision **ledger** (`<backup>.ledger.json`,
+schema 1: t ID → callID → part IDs, scores, `prior_reason` trail, SQL change sets, sha256)
+is persisted on every new apply — runs predating it are aggregate-only (insufficient); the
+reference arm is the **proxy summariser** (`claude -p --model sonnet`), not the platform
+`/compact` itself, and its "fabricated" figure is a token-presence count.
+
+Two-arm study, six archived sessions (two rounds, 6/6 guarantees green; store-level, MiB):
+
+| case | class | raw | JevCompact v1.1 | reduction | anchors | fabricated | proxy summariser compression / anchors / fabricated |
+|---|---|---|---|---|---|---|---|
+| R1A | R1 | 36.02 | 13.88 | 61.5 % | 245/446 | 0 | 0.027 / 29/446 / 15 |
+| R1B | R1 | 33.81 | 6.87 | 79.7 % | 363/441 | 0 | 0.038 / 39/441 / 11 |
+| R1C | R1 | 12.49 | 4.25 | 66.0 % | 482/539 | 0 | 0.018 / 22/539 / 11 |
+| R2A | R2 | 27.10 | 23.85 | 12.0 % | 89/216 | 0 | 0.024 / 14/216 / 9 |
+| R2B | R2 | 22.35 | 19.93 | 10.8 % | 67/145 | 0 | 0.035 / 12/145 / 8 |
+| R2C | R2 | 11.06 | 9.50 | 14.1 % | 128/180 | 0 | 0.033 / 25/180 / 11 |
+
+The R2 extra-pass gain is measured 0 in all three cases — the base policy already owns
+the reduction there; dedup/trim are complementary on ledger-dominant sessions (R1).
+Full machine-readable bundles: `JevCompact-sessions-review-20260925-v3.zip`
+(SHA-256 `014c175f8ad64ff83da46c3055a1f86780b722f039aa7edfd495c2ca8060aaa9`, 62 files:
+10 sessions, 6 case ledgers + decision files + mapping, registry, reversibility check).
+
 ## The evidence
 
 Everything the README claims is measured, and the measurement is published: nine archived
