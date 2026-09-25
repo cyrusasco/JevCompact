@@ -1,7 +1,7 @@
 {
   "name": "jevcompact",
   "version": "1.0.0",
-  "description": "Lossless session compaction for Claude Code, Codex and ZCode — Jev keep/drop decisions plus a Chinese-optimized lossless policy. No paraphrasing, no hallucinated summaries, no distribution of lost context.",
+  "description": "No-rewrite session compaction for Claude Code, Codex and ZCode — Jev keep/drop decisions plus a Chinese-optimized retention policy. No paraphrasing, no hallucinated summaries; dropped rows stay recoverable only via the sealed set (paired backup + decision ledger).",
   "license": "MIT",
   "type": "module",
   "engines": { "node": ">=22" },
@@ -11,6 +11,7 @@
     "charts": "node tools/make-charts.mjs",
     "verify": "node tools/verify-clean.mjs",
     "prepush": "node tools/verify-clean.mjs",
+    "test": "node --test tests/payload.test.mjs",
     "studio": "node lib/jve-studio-app.mjs",
     "desktop": "node tools/install-desktop.mjs"
   },
@@ -23,7 +24,7 @@
     "./zcode": "./lib/zcode-jve.mjs"
   },
   "files": ["bin", "lib", "skills", "docs", "tools", "README.md", "LICENSE", "NOTICE.md"],
-  "keywords": ["compaction", "context", "claude-code", "codex", "zcode", "chinese", "中文", "lossless", "jev", "typesafe", "mcp"],
+  "keywords": ["compaction", "context", "claude-code", "codex", "zcode", "chinese", "中文", "retention", "no-rewrite", "jev", "typesafe", "mcp"],
   "dependencies": {},
   "repository": { "type": "git", "url": "git+https://github.com/cyrusasco/JevCompact.git" }
 }

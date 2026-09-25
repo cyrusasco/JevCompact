@@ -1,6 +1,6 @@
 # JevCompact
 
-**Lossless session compaction for LLM agents — optimized for Chinese.**
+**No-rewrite session compaction for LLM agents — optimized for Chinese.**
 
 Long agent sessions eventually exceed the model's context window (and the proxy's
 request-size limit — 413 "Payload Too Large" is the usual first sign). Every mainstream
@@ -13,7 +13,7 @@ summariser lost.
 
 JevCompact takes a different approach: it **never rewrites text**. It asks the TypeSafe *Jev*
 verifier one keep/drop decision per *tool call* (the bulk of any session is tool results —
-superseded file reads, repeated commands, progress bars), and layers a **lossless policy** on
+superseded file reads, repeated commands, progress bars), and layers a **keep/drop policy** on
 top that guarantees the parts that matter survive:
 
 | policy rule (lib/policy.mjs) | guarantee |
@@ -26,12 +26,15 @@ Measured on nine private archived sessions (details: `docs/EVIDENCE.md`):
 
 | arm | anchors recalled | corrections retained | critical evidence kept | fabrications | mean compression | handover needed |
 |---|---|---|---|---|---|---|
-| LLM summary (the usual `/compact`) | 30 % | 41 % | 71 % | 45 | 0.035 | **yes, always** |
+| LLM summary (proxy summariser arm, not the platform `/compact`) | 30 % | 41 % | 71 % | 45 | 0.035 | **yes, always** |
 | Jev, bare classifier | 100 % | 100 % | **9 %** ⚠ | 0 | 0.362 | yes |
-| **Jev + lossless policy** | 100 % | 100 % | **100 %** | **0** | 0.946* | **no — 9/9 sessions HANDOVER-FREE** |
+| **Jev + keep/drop policy** | 100 % | 100 % | **100 %** | **0** | 0.946* | **0/9 vs 9/9 passing the continuation-readiness metrics** — a metric verdict; no live continuation test has been run |
 
 \* on debug-loop-dominated sessions the policy keeps more — see
-*Limitations and future work*: that is the price of losing nothing.
+*Limitations and future work*: that is the price of retaining everything the metrics count.
+Reconstructability note: dropped rows are recoverable only from the sealed set (compacted
+session + paired pre-apply backup + decision ledger), conditionally on backup verification
+and an executed restore test — see `docs/EVIDENCE.md`.
 
 ## Why it is optimized for Chinese
 
@@ -148,7 +151,7 @@ is in `lib/`; every routine in `bin/jevcompact.mjs` maps back to a documented op
 
 ## v1.1 — opt-in passes, the round-2/3 corrections
 
-Three explicit flags extend the same lossless contract (they only ever turn drop rows;
+Three explicit flags extend the same keep/drop contract (they only ever turn drop rows;
 text is still never rewritten):
 
 | flag | effect |
@@ -228,7 +231,7 @@ JevCompact is built so that nothing of your sessions can travel with it:
 
 ## Limitations and future work
 
-- **Compression vs. losslessness.** On sessions dominated by a long correction loop, the
+- **Compression vs. retention.** On sessions dominated by a long correction loop, the
   policy raises the reduction ratio from ~0.36 down to ~0.95 kept: everything the loop is,
   the loop keeps. Plain Q&A sessions still compact hard (~0.2–0.5 kept).
 - **Calibration.** The classifier is trained mostly on English agent trajectories; for CJK

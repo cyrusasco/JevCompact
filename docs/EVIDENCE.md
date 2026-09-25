@@ -14,9 +14,17 @@ rejects the distribution if any identifier of the corpus leaks.
   host's own compaction boundary is honoured, the live history is windowed 40 % head /
   60 % tail and oversized messages are sliced at the same offsets for every arm.
 - **Arms.** `normal` — the stock LLM-summary engine (print mode, sonnet-class model, the
-  summarising instructions the harnesses hand out). `Jev + lossless policy` — the shipped
+  summarising instructions the harnesses hand out). `Jev + keep/drop policy` — the shipped
   configuration: per-paired-tool-call keep/drop decisions by the Jev verifier (threshold
-  0.6) with the lossless policy (`lib/policy.mjs`) on top.
+  0.6) with the policy layer (`lib/policy.mjs`) on top. Terminology note: every claim in
+  this document is a **retention metric** (保留度指標) — user text never rewritten
+  (byte-identical), zero source-absent tokens in the compacted artifact, and keep decisions
+  recorded per call — verified against the paired pre-apply backups for the audited runs.
+  Retention metrics do **not** assert information-reversibility: byte-reconstructability of
+  dropped rows from the compacted session alone is **not** claimed. It holds only for the
+  sealed set (session + paired backup + decision ledger), and even that claim is conditional
+  on backup content verification, ledger write success, and an executed end-to-end restore
+  test — see the v1.2 STOP-REPORT of 2026-09-26.
 - **Ground truth.** The five objects are mined from the input itself and scored against the
   arm's output by verbatim containment: **goal** (the task spec, including attachment
   bodies), **issue memory** (assistant clauses stating *why* an attempt failed),
@@ -55,7 +63,10 @@ Keep = share of original characters retained after compaction. Score: goal 20 + 
 Aggregates (all nine sessions, all measurements real): anchors recalled by the normal arm
 62/206 (30 %) against 206/206 (100 %) by the policy arm; corrections retained 58/140 (41 %)
 against 140/140; critical evidence 108/152 (71 %) against 152/152; fabrications 45 against
-**0**; mean keep ratio 0.035 against 0.946; handover-free verdicts 0/9 against **9/9**.
+**0**; mean keep ratio 0.035 against 0.946; sessions passing the continuation-readiness
+metrics 0/9 against **9/9** — a metric verdict (the five objects above), not a test of
+actually restarting the sessions and continuing the work live; no live continuation study
+has been run.
 
 ## Table 2 — anatomy of case-01 (the 75.6 % that survived still scores)
 
@@ -82,7 +93,9 @@ entity — hence a lower keep share with a higher keep of the things that matter
 
 ## Case 10 — the capacity wall, and windowed compaction
 
-The nine tables above measure *losslessness* — what survives compaction. A tenth case
+The nine tables above measure *what survives compaction* (the retention dimensions defined
+in the protocol — not a proof of strict losslessness; see the terminology note under Arms).
+A tenth case
 measures *capacity* — how large a session may grow before compaction itself gives up. The
 fixture is a frozen, read-only pre-compaction snapshot of a production session (3012
 messages, 2680 paired tool calls) whose conversation skeleton alone needs ~162k tokens
@@ -122,3 +135,22 @@ a no-op on the published numbers (the committed data file remains the released a
 
 The `npm run verify` gate exits non-zero on any of the above; the distribution is built
 only from a clean scan.
+
+## Addendum — v1.2 `--externalized` evaluated and stopped at P0 (2026-09-26)
+
+The outcome-subsumption idea (drop exploration rows whose fact-value a surviving conclusion
+row already covers, or whose conclusion is externalized to a skill) was measured before any
+implementation, on the six archived study cases plus an additional sample of three sessions
+(one R4-classified session and two R1-classified subagent sessions): under the strict
+token-coverage rule the deletable pool is **0.1–3.0 % of store bytes** (independently
+recomputed upper bounds agree), far below the pre-registered 30 % go threshold — the plan's
+own kill criterion triggered and no code was shipped. Two by-products of the evaluation did
+land: the judgement-payload fold now includes `metadata.display` even when `state.output`
+is present (previously console-family rows with both fields could hide their display from
+the classifier) — within the same 4096-char payload cap; the residual truncation blind spot
+(rows whose display full text still does not reach the classifier payload: 154/122/87
+across three R2 cases) is recorded as a known limitation. The sealed-set reconstructability
+claim is explicitly conditioned on
+backup content verification, ledger write success, and an executed end-to-end restore test
+(none of which the current build performs — the claim is stated as conditional, not
+absolute). Full method and raw figures are withheld locally under the privacy gate.

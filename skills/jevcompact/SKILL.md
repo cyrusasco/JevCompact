@@ -1,9 +1,9 @@
 ---
 name: jevcompact
-description: Compact an over-long LLM session without losing information — use when a session nears the model context limit, the API returns 413/Payload Too Large, before handing over a task to a fresh session, or instead of /compact on any long conversation of sessions. Lossless: prunes stale tool results via the Jev verifier plus a policy layer, never rewrites text, Chinese-safe.
+description: Compact an over-long LLM session by pruning tool records without rewriting any text — use when a session nears the model context limit, the API returns 413/Payload Too Large, before handing over a task to a fresh session, or instead of /compact on any long conversation of sessions. Retention-first: prunes stale tool results via the Jev verifier plus a keep/drop policy layer, never rewrites text, Chinese-safe.
 ---
 
-# Skill: JevCompact — lossless session compaction
+# Skill: JevCompact — no-rewrite session compaction
 
 When the user asks to compact, shrink, rescue or handover a long session — or a session just
 exceeded the context window — run JevCompact instead of the harness's native summarising
