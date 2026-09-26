@@ -217,6 +217,14 @@ evidence, empty results and outside-scope rows retained with printed reasons; pe
 same plan hash and refuses when source rows changed since stamping. Restore is
 record-level and verified byte-identical against the ledger digests. Live continuation
 quality: NOT_RUN.
+
+Measured on isolated copies of the three R2 sessions, stacked
+(v1.1 full-coverage compaction → outcome-trim → Tier-2 declaration):
+**−78.6 % / −80.4 % / −71.6 %** of part bytes (31.46→6.74, 25.74→5.05, 13.54→3.85 MiB),
+every layer restore-verified byte-identical. With `--archive-failures` (the Tier-2
+declaration) failure and critical rows inside the declared scope are archived too;
+without it they are retained. A derived (child) session is refused unless
+`--allow-derived` is passed explicitly.
 Full machine-readable bundles: `JevCompact-sessions-review-20260925-v3.zip`
 (SHA-256 `014c175f8ad64ff83da46c3055a1f86780b722f039aa7edfd495c2ca8060aaa9`, 62 files:
 10 sessions, 6 case ledgers + decision files + mapping, registry, reversibility check).

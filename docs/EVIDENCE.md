@@ -189,3 +189,23 @@ scope plus the Tier-2 dead-end declaration) and **11.1 %→13.9 %** (R2C) of par
 the third session is a derived (subagent) session and is refused by design. Restore
 verification: all tracked rows byte-identical, zero conflicts; sentinel rows untouched.
 Live continuation quality: still NOT_RUN.
+## Addendum 4 — stacked three-layer drill on isolated copies (2026-09-26, round-11)
+
+The outcome-trim mode was exercised end-to-end on isolated copies of the three R2
+sessions, stacked on top of a full-coverage v1.1 compaction (each layer measured,
+restore verified per layer):
+
+| session (class) | raw parts | L1 v1.1 full | L2 outcome-trim (declared scope) | L3 Tier-2 declaration | final |
+|---|---|---|---|---|---|
+| R2A (console) | 31.46 MiB | 22.33 (−29.0 %) | 7.44 (−76.3 %) | 6.74 | **−78.6 %** |
+| R2B (console, derived) | 25.74 MiB | refused by design | — | — | — (needs --allow-derived) |
+| R2C (console) | 13.54 MiB | 9.24 (−20.7 %) | retained (topic drift) | 3.85 after a data-derived topic declaration | **−71.6 %** |
+
+(R2B is a child session of R2A; the derived-session refusal held at every layer, and a
+stacked run with the explicit override reached −80.4 % (25.74→5.05 MiB) with restore
+verified.) The topic-seed lesson from R2C: a declared topic that lives in rows already
+archived by an earlier layer stops matching — data-derived re-declaration (from the
+surviving rows' own bootstrap signature) is the documented remedy. All drills ran on
+isolated copies; the live database was only ever opened read-only. Restore verification
+covered every tracked row byte-identically; sentinel rows in other sessions were
+untouched. Live continuation quality: NOT_RUN.

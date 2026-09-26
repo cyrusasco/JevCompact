@@ -1,3 +1,9 @@
+## 2026-09-26 (round-11b) — stacked three-layer drill measured
+
+- Isolated-copy stacks of v1.1 full-coverage compaction + outcome-trim + Tier-2
+  declaration reach −78.6 / −80.4 / −71.6 % of part bytes on the three R2 sessions
+  (every layer restore-verified byte-identical). compactZcodeSession gains dbPath
+  (isolated drills) and allowDerived (explicit child-session override).
 ## 2026-09-26 (round-11) — full-coverage classification measured
 
 - Full-transcript classification of the three R2 sessions (175 requests, ~4 min): the
