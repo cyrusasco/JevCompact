@@ -205,7 +205,7 @@ async function outcomeCommand(rest) {
     const target = rest.find((a) => !a.startsWith("--"));
     if (!target) { console.error('usage: outcome <session> --topic="…" [--topic=…] [--keep-last=1] [--db=<path>] | --apply --plan=<file> | --restore --ledger=<file> | --finalize --ledger=<file>'); return 1; }
     const topics = rest.filter((a) => a.startsWith("--topic=")).map((a) => a.slice(8));
-    const r = await mod.planOutcomeTrimForSession(target, { topics, keepLast: Number(argv["keep-last"] ?? 1), archiveFailures: !!argv["archive-failures"], dbPath, log });
+    const r = await mod.planOutcomeTrimForSession(target, { topics, keepLast: Number(argv["keep-last"] ?? 1), archiveFailures: !!argv["archive-failures"], allowDerived: !!argv["allow-derived"], dbPath, log });
     if (!r.ok) { console.log(`${r.benign ? "SKIP (benign)" : "FAILED"}: ${r.error}`); return r.benign ? 0 : 5; }
     const planFile = `outcome-plan-${r.session.id.slice(0, 18)}-${Date.now()}.json`;
     fs.writeFileSync(planFile, JSON.stringify(r.plan, null, 1));

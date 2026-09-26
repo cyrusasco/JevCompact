@@ -285,3 +285,19 @@ test("Tier-2 declaration (--archive-failures): failure/empty rows in scope becom
   assert.ok(!tier2.plan.retained.some((r) => r.part_id === "f1"), "no longer retained under the declaration");
   assert.equal(tier2.plan.outcome.anchor_part_id, "o1", "outcome anchor still kept");
 });
+
+test("allowDerived: a child session is refused by default and plannable with the explicit override", async () => {
+  const dbFile = path.join(TMP, "child.sqlite");
+  const db = new DatabaseSync(dbFile, { open: true });
+  for (const s of SCHEMA) db.exec(s);
+  db.prepare("INSERT INTO session (id, title, parent_id) VALUES (?, ?, ?)").run("sess_fixture_child", "child", "sess_fixture_parent");
+  db.prepare("INSERT INTO message (id, session_id, time_created, time_updated, data) VALUES (?, ?, ?, ?, ?)").run("cfx_m1", "sess_fixture_child", 1, 1, JSON.stringify({ role: "assistant" }));
+  db.prepare("INSERT INTO part (id, message_id, session_id, time_created, time_updated, data, sequence) VALUES (?, ?, ?, ?, ?, ?, NULL)").run("cfx_p1", "cfx_m1", "sess_fixture_child", 1, 1, JSON.stringify({ type: "tool", tool: CONSOLE_TOOL, callID: "call_cfx_1", state: { status: "completed", input: { code: "task-target-final" }, output: "RESULT done" } }));
+  db.close();
+  const refused = await planOutcomeTrimForSession("sess_fixture_child", { topics: ["task-target"], dbPath: dbFile });
+  assert.equal(refused.ok, false);
+  assert.ok(refused.error.includes("derived"));
+  const allowed = await planOutcomeTrimForSession("sess_fixture_child", { topics: ["task-target"], allowDerived: true, dbPath: dbFile });
+  assert.equal(allowed.ok, true);
+  assert.equal(allowed.plan.outcome.anchor_part_id, "cfx_p1");
+});
