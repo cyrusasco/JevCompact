@@ -1,3 +1,10 @@
+## 2026-09-26 (round-11) — full-coverage classification measured
+
+- Full-transcript classification of the three R2 sessions (175 requests, ~4 min): the
+  corrected v1.1 policy reaches −32.8 / −34.9 / −19.5 % (was 10–15 % under partial
+  coverage — retracted). I2 entity pins at full scale become the dominant brake,
+  motivating the outcome-trim mode; isolated-copy drills: −52.3→−55.4 % (R2A, with the
+  Tier-2 declaration) and −11.1→−13.9 % (R2C); restore verified byte-identical.
 # Changelog
 
 ## 2026-09-26 — outcome-trim mode; coverage-corrected claims

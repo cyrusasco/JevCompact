@@ -185,13 +185,14 @@ Two-arm study, six archived sessions (two rounds, 6/6 guarantees green; store-le
 The R2 extra-pass gain is measured 0 in all three cases — the base policy already owns
 the reduction there; dedup/trim are complementary on ledger-dominant sessions (R1).
 
-† **Coverage caveat (2026-09-26, rounds 9–10):** those R2 figures come from a benchmark
+† **Coverage caveat (2026-09-26, rounds 9–11):** those R2 figures come from a benchmark
 run that classified only **6.0 / 11.6 / 15.2 %** of the sessions' paired calls (clamped
-corpus). They are partial-classification reductions against the whole store — **not** a
-policy ceiling; the earlier "10–15 % floor" wording is retracted. Full-coverage
-classification is a separate, not-yet-run study (~175 requests for the three R2
-sessions; see docs/EVIDENCE.md). For R2 the shipped improvement is the outcome-trim
-mode below.
+corpus) — partial-classification reductions, not a ceiling; the earlier "10–15 %
+floor" wording is retracted. A full-coverage classification study HAS now run
+(175 requests, ~4 min): the corrected v1.1 policy reaches **−32.8 / −34.9 / −19.5 %**
+on R2A/B/C (27.80→18.69, 22.91→14.91, 11.43→9.21 MiB) while pinning I3 148/117/142 and
+I2 1072/696/726 evidence rows. On top of that, the opt-in outcome-trim mode (declared
+scope) adds a further layer — see below.
 
 ## Outcome-trim mode — outcome replaces exploration (opt-in, R2 improvement)
 

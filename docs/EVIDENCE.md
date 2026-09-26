@@ -172,3 +172,20 @@ parts 13.54 → 12.77 MiB) with 67 rows retained under printed reasons, and rest
 218 tracked rows byte-identical with zero conflicts. Live continuation quality remains
 NOT_RUN; the full-coverage classification study (~175 requests) awaits an approved
 budget. Aggregate/corpus identifiers stay withheld under the privacy gate.
+## Addendum 3 — full-coverage classification study (2026-09-26, round-11)
+
+The partial-coverage caveat above is now closed by measurement: classifying the FULL
+transcripts of the three R2 sessions through the production windowed path (175 requests,
+~4 minutes) yields, under the corrected v1.1 policy — **R2A 27.80→18.69 MiB (−32.8 %),
+R2B 22.91→14.91 MiB (−34.9 %), R2C 11.43→9.21 MiB (−19.5 %)** — with the policy pinning
+I3 148/117/142 and I2 1072/696/726 evidence rows respectively. Two consequences: (a) the
+earlier "R2 10–15 %" figures were an artefact of partial coverage, now retracted;
+(b) at full coverage the I2 entity-mention pins reinstate hundreds of rows and become
+the dominant brake — which is exactly what the opt-in outcome-trim mode addresses (user-
+declared scope, per-item replaced_by, verified backup + prepared ledger + atomic
+transaction, byte-verified record-level restore). On isolated copies of the same
+sessions the outcome-trim mode archived **52.3 %→55.4 %** (R2A, multi-topic declared
+scope plus the Tier-2 dead-end declaration) and **11.1 %→13.9 %** (R2C) of part bytes;
+the third session is a derived (subagent) session and is refused by design. Restore
+verification: all tracked rows byte-identical, zero conflicts; sentinel rows untouched.
+Live continuation quality: still NOT_RUN.

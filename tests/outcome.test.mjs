@@ -269,3 +269,19 @@ test("I1: text parts are never candidates (planner sees tool rows only)", async 
   const ids = new Set([...planned.plan.candidates.map((c) => c.part_id), ...planned.plan.retained.map((r) => r.part_id)]);
   assert.ok(!ids.has("fx_t1"), "user text part must never enter the plan");
 });
+
+test("Tier-2 declaration (--archive-failures): failure/empty rows in scope become declared candidates", () => {
+  const rows = [
+    { part_id: "f1", tool: CONSOLE_TOOL, bytes: 5, input_text: "probe task-target-tier2", status: "error", output_text: "Error: permission denied" },
+    { part_id: "z1", tool: CONSOLE_TOOL, bytes: 5, input_text: "footer task-target-tier2", output_text: "", status: "completed" },
+    { part_id: "o1", tool: CONSOLE_TOOL, bytes: 8, input_text: "task-target-tier2 final", output_text: "RESULT loaded", status: "completed" },
+  ];
+  const conservative = planOutcomeTrim({ rows, topics: ["task-target-tier2"] });
+  assert.ok(conservative.plan.retained.some((r) => r.part_id === "f1"), "default keeps failure evidence");
+  const tier2 = planOutcomeTrim({ rows, topics: ["task-target-tier2"], opts: { archiveFailures: true } });
+  assert.equal(tier2.plan.tier2.archive_failures, true);
+  assert.ok(tier2.plan.candidates.some((c) => c.part_id === "f1" && c.archived_evidence === true), "declared failure row becomes a candidate");
+  assert.ok(tier2.plan.candidates.some((c) => c.part_id === "z1"), "declared empty row becomes a candidate");
+  assert.ok(!tier2.plan.retained.some((r) => r.part_id === "f1"), "no longer retained under the declaration");
+  assert.equal(tier2.plan.outcome.anchor_part_id, "o1", "outcome anchor still kept");
+});
