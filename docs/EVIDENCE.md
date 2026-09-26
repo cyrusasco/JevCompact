@@ -154,3 +154,21 @@ claim is explicitly conditioned on
 backup content verification, ledger write success, and an executed end-to-end restore test
 (none of which the current build performs — the claim is stated as conditional, not
 absolute). Full method and raw figures are withheld locally under the privacy gate.
+
+## Addendum 2 — coverage correction and the outcome-trim mode (2026-09-26, rounds 9–10)
+
+A round-9 audit found that the R2 comparison figures above were produced by a benchmark
+that classified only **6.0 / 11.6 / 15.2 %** of the three R2 sessions' paired calls (the
+clamped-corpus harness) while accounting the whole store: they are partial-coverage
+reductions, not a policy ceiling — the "10–15 % floor" wording is retracted. The same
+audit corrected two measurement defects (a line-grouping bug that always reported zero
+non-last rows, and a mixed-encoding denominator) and re-attributed the retention stages
+from the post-policy decision state (I3 10/22/19, I2 0/11/13 across R2A/B/C — the
+earlier "pins = 0" had measured the wrong stage). A real sub-task drill on an isolated
+copy of one R2 session: the new opt-in outcome-trim mode (user-declared scope,
+plan-hash bound, verified backup, prepared ledger, one atomic transaction, record-level
+byte-verified restore) archived 151 superseded exploration rows (0.77 MiB; session
+parts 13.54 → 12.77 MiB) with 67 rows retained under printed reasons, and restored all
+218 tracked rows byte-identical with zero conflicts. Live continuation quality remains
+NOT_RUN; the full-coverage classification study (~175 requests) awaits an approved
+budget. Aggregate/corpus identifiers stay withheld under the privacy gate.

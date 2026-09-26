@@ -109,7 +109,7 @@ Formats read: Claude Code JSONL (`~/.claude/projects/*/*.jsonl`), Codex rollouts
   `/compact`; its `fabricated` figure is a token-presence count.
 - Two-arm study (6 archived sessions, 6/6 guarantees green): R1 ledger-type sessions
   compact 61–80 % with 100 % anchor recall and 0 fabrications; R2 console-type reach the
-  policy floor 10–14 % (extra passes add 0 — measured); the proxy summariser compresses
+  10–14 % in a partial-coverage benchmark (6–15 % of calls classified; not a ceiling — retracted 2026-09-26); the proxy summariser compresses
   harder (~96–98 %) but keeps only 4–14 % of anchors and introduces 8–15 tokens not in
   the source. Single-file claim: byte-reconstructable only as the sealed set
   (session + paired backup + ledger).

@@ -178,12 +178,44 @@ Two-arm study, six archived sessions (two rounds, 6/6 guarantees green; store-le
 | R1A | R1 | 36.02 | 13.88 | 61.5 % | 245/446 | 0 | 0.027 / 29/446 / 15 |
 | R1B | R1 | 33.81 | 6.87 | 79.7 % | 363/441 | 0 | 0.038 / 39/441 / 11 |
 | R1C | R1 | 12.49 | 4.25 | 66.0 % | 482/539 | 0 | 0.018 / 22/539 / 11 |
-| R2A | R2 | 27.10 | 23.85 | 12.0 % | 89/216 | 0 | 0.024 / 14/216 / 9 |
-| R2B | R2 | 22.35 | 19.93 | 10.8 % | 67/145 | 0 | 0.035 / 12/145 / 8 |
-| R2C | R2 | 11.06 | 9.50 | 14.1 % | 128/180 | 0 | 0.033 / 25/180 / 11 |
+| R2A | R2 | 27.10 | 23.85 | 12.0 %† | 89/216 | 0 | 0.024 / 14/216 / 9 |
+| R2B | R2 | 22.35 | 19.93 | 10.8 %† | 67/145 | 0 | 0.035 / 12/145 / 8 |
+| R2C | R2 | 11.06 | 9.50 | 14.1 %† | 128/180 | 0 | 0.033 / 25/180 / 11 |
 
 The R2 extra-pass gain is measured 0 in all three cases — the base policy already owns
 the reduction there; dedup/trim are complementary on ledger-dominant sessions (R1).
+
+† **Coverage caveat (2026-09-26, rounds 9–10):** those R2 figures come from a benchmark
+run that classified only **6.0 / 11.6 / 15.2 %** of the sessions' paired calls (clamped
+corpus). They are partial-classification reductions against the whole store — **not** a
+policy ceiling; the earlier "10–15 % floor" wording is retracted. Full-coverage
+classification is a separate, not-yet-run study (~175 requests for the three R2
+sessions; see docs/EVIDENCE.md). For R2 the shipped improvement is the outcome-trim
+mode below.
+
+## Outcome-trim mode — outcome replaces exploration (opt-in, R2 improvement)
+
+A completed sub-task keeps its actual result, method record, still-valid failure
+evidence, empty-result rows (marked unproven) and anything outside the declared scope;
+exploration rows superseded by the outcome are archived. Opt-in per declared topic,
+plan-hash bound, default dry-run; normal compaction is untouched.
+
+```sh
+# 1) dry run — builds and stamps a plan (nothing is deleted)
+node bin/jevcompact.mjs outcome <session> --topic="Master order" [--db=<isolated copy>]
+# 2) apply — verified backup -> prepared ledger -> one atomic delete transaction
+node bin/jevcompact.mjs outcome --apply --plan=<plan file> --plan-hash=<plan_sha256> [--skill-path=<SKILL.md>]
+# 3) restore — record-level, only the plan's own rows, conflicts listed, never a whole-DB overwrite
+node bin/jevcompact.mjs outcome --restore --ledger=<backup>.outcome-ledger.json [--db=<isolated copy>]
+```
+
+Guarantees: user text never touched; policy-pin rows retained; failure/critical
+evidence, empty results and outside-scope rows retained with printed reasons; per-item
+`replaced_by` mapping in the plan; decision source recorded as a deterministic planner
++ user declaration (no Jev verdicts claimed). Applying on a real session requires the
+same plan hash and refuses when source rows changed since stamping. Restore is
+record-level and verified byte-identical against the ledger digests. Live continuation
+quality: NOT_RUN.
 Full machine-readable bundles: `JevCompact-sessions-review-20260925-v3.zip`
 (SHA-256 `014c175f8ad64ff83da46c3055a1f86780b722f039aa7edfd495c2ca8060aaa9`, 62 files:
 10 sessions, 6 case ledgers + decision files + mapping, registry, reversibility check).

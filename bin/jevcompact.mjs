@@ -178,6 +178,48 @@ function reportOne(file, msgs, result, pinned, outChars) {
 }
 
 /* ------------------------------------------------------------------- run */
+/* ----------------------------------------------------------- outcome-trim host */
+// 「成果取代探索」：per declared scope, plan-hash bound, default dry-run. Usage:
+//   node bin/jevcompact.mjs outcome <session> --topic="Master order" [--topic=…] [--keep-last=1] [--db=<path>]   # dry-run plan
+//   node bin/jevcompact.mjs outcome --apply --plan=<file> [--db=<path>] [--skill-path=<SKILL.md>]                # apply (real delete)
+//   node bin/jevcompact.mjs outcome --restore --ledger=<file> [--db=<path>]                                      # record-level restore
+//   node bin/jevcompact.mjs outcome --finalize --ledger=<file> [--db=<path>]                                     # after a crash between COMMIT and ledger write
+async function outcomeCommand(rest) {
+  const argv = {}; for (const a of rest) { const m = /^(?:--)([^=]+)(?:=(.*))?$/.exec(a); if (m) argv[m[1]] = m[2] ?? true; }
+  const mod = await import("../lib/zcode-jve.mjs");
+  const log = (m) => console.log(`[outcome] ${m}`);
+  const dbPath = typeof argv.db === "string" ? argv.db : undefined; // isolated-copy drills point --db at a copy
+  try {
+    if (argv.finalize) { const r = mod.finalizeOutcomeLedger({ ledgerFile: argv.ledger, dbPath, log }); console.log(JSON.stringify(r, null, 1)); return r.ok ? 0 : 5; }
+    if (argv.restore) { const r = mod.restoreOutcomePlan({ ledgerFile: argv.ledger, dbPath, log }); console.log(JSON.stringify(r, null, 1)); return r.ok ? 0 : 5; }
+    if (argv.apply) {
+      if (typeof argv["plan-hash"] === "string" && argv.plan) {
+        const plan = JSON.parse(fs.readFileSync(argv.plan, "utf8"));
+        if (plan.plan_sha256 !== argv["plan-hash"]) { console.error(`plan hash mismatch: file ${plan.plan_sha256} vs --plan-hash ${argv["plan-hash"]}`); return 1; }
+      }
+      const r = await mod.applyOutcomePlan({ planFile: argv.plan, apply: true, dbPath, skillPath: typeof argv["skill-path"] === "string" ? argv["skill-path"] : null, log });
+      console.log(JSON.stringify({ ...r, plan: undefined }, null, 1));
+      return r.ok ? 0 : 5;
+    }
+    // dry-run plan (default)
+    const target = rest.find((a) => !a.startsWith("--"));
+    if (!target) { console.error('usage: outcome <session> --topic="…" [--topic=…] [--keep-last=1] [--db=<path>] | --apply --plan=<file> | --restore --ledger=<file> | --finalize --ledger=<file>'); return 1; }
+    const topics = rest.filter((a) => a.startsWith("--topic=")).map((a) => a.slice(8));
+    const r = await mod.planOutcomeTrimForSession(target, { topics, keepLast: Number(argv["keep-last"] ?? 1), dbPath, log });
+    if (!r.ok) { console.log(`${r.benign ? "SKIP (benign)" : "FAILED"}: ${r.error}`); return r.benign ? 0 : 5; }
+    const planFile = `outcome-plan-${r.session.id.slice(0, 18)}-${Date.now()}.json`;
+    fs.writeFileSync(planFile, JSON.stringify(r.plan, null, 1));
+    console.log(`plan written: ${planFile}`);
+    console.log(`  scope: ${r.plan.counts.in_scope}/${r.rows_total} console rows | candidates: ${r.plan.counts.candidates} (${(r.plan.bytes.candidates_bytes / 1048576).toFixed(2)} MiB) | retained: ${r.plan.counts.retained} (each with a reason) | outside scope: ${r.plan.counts.outside_scope}`);
+    console.log(`  plan_sha256: ${r.plan.plan_sha256}`);
+    for (const c of r.plan.candidates.slice(0, 12)) console.log(`    drop ${c.part_id} (${(c.bytes / 1024).toFixed(0)} KiB) replaced_by ${c.replaced_by} ${c.override_of !== "none" ? "[i3 override]" : ""}`);
+    if (r.plan.candidates.length > 12) console.log(`    … ${r.plan.candidates.length - 12} more`);
+    for (const rr of r.plan.retained.slice(0, 8)) console.log(`    keep ${rr.part_id} (${(rr.bytes / 1024).toFixed(0)} KiB) reason: ${rr.reason}`);
+    console.log(`  apply: node bin/jevcompact.mjs outcome --apply --plan=${planFile} --plan-hash=${r.plan.plan_sha256}${dbPath ? ` --db="${dbPath}"` : ""}`);
+    return 0;
+  } catch (e) { console.error(`FAILED: ${e?.message ?? e}`); return 5; }
+}
+
 /* --------------------------------------------------------------- studio host */
 async function studioCommand(rest) {
   const HERE_DIR = path.dirname(fileURLToPath(import.meta.url));
@@ -199,6 +241,7 @@ async function studioCommand(rest) {
 async function main() {
   const raw = process.argv.slice(2);
   if (raw[0] === "studio") return studioCommand(raw.slice(1));
+  if (raw[0] === "outcome") return outcomeCommand(raw.slice(1));
   const opts = parseArgs(raw);
   if (opts.restore) {
     const bak = opts.restore + ".pre-jev.bak";

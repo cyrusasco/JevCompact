@@ -4,14 +4,19 @@
   "description": "No-rewrite session compaction for Claude Code, Codex and ZCode — Jev keep/drop decisions plus a Chinese-optimized retention policy. No paraphrasing, no hallucinated summaries; dropped rows stay recoverable only via the sealed set (paired backup + decision ledger).",
   "license": "MIT",
   "type": "module",
-  "engines": { "node": ">=22" },
-  "bin": { "jevcompact": "bin/jevcompact.mjs", "jvc": "bin/jevcompact.mjs" },
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "jevcompact": "bin/jevcompact.mjs",
+    "jvc": "bin/jevcompact.mjs"
+  },
   "scripts": {
     "data": "node tools/build-data.mjs",
     "charts": "node tools/make-charts.mjs",
     "verify": "node tools/verify-clean.mjs",
     "prepush": "node tools/verify-clean.mjs",
-    "test": "node --test tests/payload.test.mjs",
+    "test": "node --test tests/payload.test.mjs tests/outcome.test.mjs",
     "studio": "node lib/jve-studio-app.mjs",
     "desktop": "node tools/install-desktop.mjs"
   },
@@ -23,8 +28,33 @@
     "./studio": "./lib/jve-studio-app.mjs",
     "./zcode": "./lib/zcode-jve.mjs"
   },
-  "files": ["bin", "lib", "skills", "docs", "tools", "README.md", "LICENSE", "NOTICE.md"],
-  "keywords": ["compaction", "context", "claude-code", "codex", "zcode", "chinese", "中文", "retention", "no-rewrite", "jev", "typesafe", "mcp"],
+  "files": [
+    "bin",
+    "lib",
+    "skills",
+    "docs",
+    "tools",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md"
+  ],
+  "keywords": [
+    "compaction",
+    "context",
+    "claude-code",
+    "codex",
+    "zcode",
+    "chinese",
+    "中文",
+    "retention",
+    "no-rewrite",
+    "jev",
+    "typesafe",
+    "mcp"
+  ],
   "dependencies": {},
-  "repository": { "type": "git", "url": "git+https://github.com/cyrusasco/JevCompact.git" }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyrusasco/JevCompact.git"
+  }
 }
