@@ -218,6 +218,16 @@ same plan hash and refuses when source rows changed since stamping. Restore is
 record-level and verified byte-identical against the ledger digests. Live continuation
 quality: NOT_RUN.
 
+Round-12 hardening (independent acceptance suite, 13 cases — all passing): unfinished
+(running/pending) rows are never outcome anchors; declared-scope trimming no longer
+adopts other tasks via shared URLs; policy-protected rows are excluded from every branch
+(incl. Tier-2); candidate ids are unique with conservation assertions; display-only
+failure evidence participates in retention; plans bind per-row content digests + a
+session snapshot and re-verify inside the delete transaction (same-length edits caught);
+ledger finalization is all-or-nothing; restore preserves original rowids and transcript
+order, refusing conflicts. A failed ledger write reports ok:false + committed_in_db:true
+(RECOVERY_PENDING) — never a fake success.
+
 Measured on isolated copies of the three R2 sessions, stacked
 (v1.1 full-coverage compaction → outcome-trim → Tier-2 declaration):
 **−78.6 % / −80.4 % / −71.6 %** of part bytes (31.46→6.74, 25.74→5.05, 13.54→3.85 MiB),

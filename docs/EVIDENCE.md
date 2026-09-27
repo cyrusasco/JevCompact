@@ -209,3 +209,23 @@ surviving rows' own bootstrap signature) is the documented remedy. All drills ra
 isolated copies; the live database was only ever opened read-only. Restore verification
 covered every tracked row byte-identically; sentinel rows in other sessions were
 untouched. Live continuation quality: NOT_RUN.
+## Addendum 5 — independent acceptance hardening (2026-09-27, round-12)
+
+An independent Codex test suite (13 synthetic acceptance cases against commit 5497d39)
+found 9 failures in the outcome-trim mode; all nine are fixed in this release and the
+suite is integrated as tests/acceptance.test.mjs (repo total 36 tests, all green; the
+independent suite also re-run green against the fixed build). Fixes: unfinished
+(running/pending) rows can no longer become outcome anchors; declared-scope trimming
+no longer adopts other tasks through shared URLs — scope is direct topic match only;
+the real policy protection list (I2/I3/recent pins) is wired into the planning entry
+and excluded from every branch including Tier-2, with retained/candidate disjointness
+enforced by throwing conservation checks; per-row content digests plus a session
+snapshot are bound into the plan and re-verified inside the delete transaction, so
+same-byte-length edits are refused; ledger finalization is all-or-nothing (any
+retained-row digest mismatch blocks confirmation); restore preserves original rowids
+and transcript read order, refusing rowid/content/order conflicts; a failed ledger
+finalization returns ok:false with committed_in_db:true and a RECOVERY_PENDING state
+(atomic tmp+rename ledger writes). Compression figures quoted earlier in this document
+were measured on the pre-hardening build (commit 5497d39 lineage) and are NOT re-measured
+here; the acceptance suite is functional, not a compression benchmark. Live continuation
+quality: NOT_RUN.

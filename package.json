@@ -16,7 +16,7 @@
     "charts": "node tools/make-charts.mjs",
     "verify": "node tools/verify-clean.mjs",
     "prepush": "node tools/verify-clean.mjs",
-    "test": "node --test tests/payload.test.mjs tests/outcome.test.mjs",
+    "test": "node --test tests/payload.test.mjs tests/outcome.test.mjs tests/acceptance.test.mjs",
     "studio": "node lib/jve-studio-app.mjs",
     "desktop": "node tools/install-desktop.mjs"
   },

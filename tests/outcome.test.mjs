@@ -5,6 +5,7 @@ import { test, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import os from "node:os";
 import { DatabaseSync } from "node:sqlite";
 import { planOutcomeTrim, planSha256, verifyPlanSource } from "../lib/outcome-trim.mjs";
@@ -153,12 +154,13 @@ test("plan hash: any post-stamp edit breaks verification", () => {
   assert.notEqual(planSha256(tampered), h);
 });
 
-test("source-unchanged verification catches byte drift", () => {
-  const plan = { candidates: [{ part_id: "e1", bytes: 10, replaced_by: "o1" }], retained: [], outcome: { anchors: ["o1"] } };
-  const rowsNow = [{ part_id: "e1", bytes: 999 }, { part_id: "o1", bytes: 8 }];
+test("source-unchanged verification catches same-length content edits (digest-based, F06)", () => {
+  const sha = (s) => createHash("sha256").update(Buffer.from(String(s), "utf8")).digest("hex");
+  const plan = { candidates: [{ part_id: "e1", bytes: 10, replaced_by: "o1" }], retained: [], outcome: { anchors: ["o1"] }, source_digests: { e1: sha("value AAA"), o1: sha("loaded") } };
+  const rowsNow = [{ part_id: "e1", data_sha256: sha("value BBB") }, { part_id: "o1", data_sha256: sha("loaded") }];
   const v = verifyPlanSource(plan, rowsNow);
   assert.equal(v.ok, false);
-  assert.ok(v.problems[0].problem === "bytes_changed");
+  assert.ok(v.problems[0].problem === "content_changed");
 });
 
 /* ---------------- end-to-end on an isolated copy ---------------- */
