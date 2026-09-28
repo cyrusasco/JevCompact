@@ -1,3 +1,13 @@
+## 2026-09-27 (round-12b) — outcome-trim in the Studio panel
+
++ /api/outcome (plan/apply/restore) + per-row 成果Dry / 成果Apply / 成果還原 buttons,
+  a topic input and Tier-2 / allow-derived checkboxes in the toolbar. Two planner
+  fixes found while wiring it live: (a) the critical-evidence regex now ignores URL/
+  hex-id substrings (a folded display full of gviz URLs no longer marks every console
+  row critical); (b) policy-protected rows may serve as method/outcome anchors (kept
+  anyway — the safest anchors) while remaining excluded from candidates, fixing
+  duplicate retained entries with a conservation guard.
+
 ## 2026-09-26 (round-11b) — stacked three-layer drill measured
 
 - Isolated-copy stacks of v1.1 full-coverage compaction + outcome-trim + Tier-2
