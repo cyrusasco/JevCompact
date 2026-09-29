@@ -1,3 +1,11 @@
+## 2026-09-30 — live progress bar + never-silent failures (round-15)
+
+- The classify loop emits machine-readable per-window progress; the Studio panel shows
+  a live progress bar with window count, percentage, elapsed time and an ETA estimate,
+  ending in a commit-phase note while the backup/transaction runs.
+- A failed compact request (service restarting / connection dropped) now alerts visibly
+  instead of only writing a log line — the "clicked and nothing happened" case.
+
 ## 2026-09-29 — floor blind spots + one-click outcome plan (round-14)
 
 - The 5% benign floor now counts EVERY byte the plan frees: reasoning scaffolding
