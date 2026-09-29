@@ -1,3 +1,13 @@
+## 2026-09-28 — reasoning trim (round-13): the assistant's scaffolding is now compactable
+
+- Measured blind spot: reasoning/step parts (22 % of one 77 MB session) were never read
+  by the compaction transcript. New --trim-reasoning pass (Studio: 🧠 思考裁剪) deletes
+  scaffolding of messages older than the newest --keep — user text/tool evidence
+  untouched, same backup/ledger/transaction, reversible; auto-triage enables it at a
+  ≥15 % scaffolding share on ANY tier; the 5 % benign floor now counts scaffolding bytes.
+- outcome-trim: empty-topic dry runs now auto-suggest up to six topics derived from the
+  session's own console rows; the Studio panel autofills the top three (no typing).
+- CLI: --trim-reasoning; tests 37/37 (new planReasoningTrim fixture).
 ## 2026-09-27 (round-12b) — outcome-trim in the Studio panel
 
 + /api/outcome (plan/apply/restore) + per-row 成果Dry / 成果Apply / 成果還原 buttons,

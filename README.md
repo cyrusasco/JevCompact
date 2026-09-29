@@ -91,6 +91,9 @@ mkdir -p ~/.zcode/skills && cp -r skills/jevcompact ~/.zcode/skills/
 node bin/jevcompact.mjs --session <id|prefix|live>          # dry run
 node bin/jevcompact.mjs --session <id|prefix|live> --apply  # in-place, verified backup first
 node bin/jevcompact.mjs --session live --apply --min-reduction 0.02 --max-state-tokens 25000
+node bin/jevcompact.mjs --session <id> --apply --trim-reasoning   # also drop the assistant's
+#   reasoning/step scaffolding of messages older than the newest --keep (measured: 22 % of one
+#   77 MB working session; user text and tool evidence are never touched; reversible)
 # long sessions never fail "history too large": the host partitions the transcript into
 # windows that each stay inside --max-state-tokens. A guarded refusal, or a plan whose
 # reduction falls below --min-reduction, is a BENIGN skip (exit 0, nothing written) — not a failure.
@@ -202,7 +205,9 @@ exploration rows superseded by the outcome are archived. Opt-in per declared top
 plan-hash bound, default dry-run; normal compaction is untouched.
 
 ```sh
-# 1) dry run — builds and stamps a plan (nothing is deleted)
+# 1) dry run — builds and stamps a plan (nothing is deleted).
+#    Omit --topic to have the planner SUGGEST topics from the session's own rows
+#    (in Jve Studio, clicking 成果Dry with an empty topic box autofills suggestions).
 node bin/jevcompact.mjs outcome <session> --topic="Master order" [--db=<isolated copy>]
 # 2) apply — verified backup -> prepared ledger -> one atomic delete transaction
 node bin/jevcompact.mjs outcome --apply --plan=<plan file> --plan-hash=<plan_sha256> [--skill-path=<SKILL.md>]

@@ -229,3 +229,20 @@ finalization returns ok:false with committed_in_db:true and a RECOVERY_PENDING s
 were measured on the pre-hardening build (commit 5497d39 lineage) and are NOT re-measured
 here; the acceptance suite is functional, not a compression benchmark. Live continuation
 quality: NOT_RUN.
+## Addendum 6 — reasoning scaffolding was invisible to compaction (2026-09-28, round-13)
+
+A user-reported "nothing shrank" case exposed a blind spot: the compaction transcript
+only ever read text and tool parts, so the assistant's reasoning / step-start /
+step-finish scaffolding — 1,080 reasoning parts, 4.11 MiB, 22 % of that 77 MB working
+session — was never even considered for trimming. New opt-in pass `--trim-reasoning`
+(Jve Studio checkbox 🧠 思考裁剪): scaffolding parts of messages older than the newest
+`--keep` messages are deleted in the same verified-backup/ledger/atomic-transaction flow
+as every other deletion; user text and tool evidence are untouched; the 5 % benign
+floor now accounts for scaffolding bytes so a policy-tight session with MiB of
+trimmable scaffolding is no longer skipped as "nothing to do". The pass is
+tier-agnostic: the auto-triage measure enables it on any session whose scaffolding
+share is ≥ 15 % (measured on the reporting session: 3,831 rows / 4.35 MiB trimmable).
+Also in this round: outcome-trim topic auto-suggestion — with an empty topic the
+planner derives up to six candidate topics from the session's own console rows (top
+URLs / long ids / input titles) and the Studio panel autofills the top three. Tests:
+37/37. Compression numbers quoted in earlier addenda are unchanged (not re-measured).
