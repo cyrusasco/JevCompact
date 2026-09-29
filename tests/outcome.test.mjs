@@ -9,7 +9,7 @@ import { createHash } from "node:crypto";
 import os from "node:os";
 import { DatabaseSync } from "node:sqlite";
 import { planOutcomeTrim, planSha256, verifyPlanSource } from "../lib/outcome-trim.mjs";
-import { planOutcomeTrimForSession, applyOutcomePlan, restoreOutcomePlan, finalizeOutcomeLedger } from "../lib/zcode-jve.mjs";
+import { planOutcomeTrimForSession, applyOutcomePlan, restoreOutcomePlan, finalizeOutcomeLedger, planReasoningTrim } from "../lib/zcode-jve.mjs";
 
 /* ---------------- fixture DB builder (isolated copy, exact live schema subset) ---------------- */
 const SCHEMA = [
@@ -302,4 +302,32 @@ test("allowDerived: a child session is refused by default and plannable with the
   const allowed = await planOutcomeTrimForSession("sess_fixture_child", { topics: ["task-target"], allowDerived: true, dbPath: dbFile });
   assert.equal(allowed.ok, true);
   assert.equal(allowed.plan.outcome.anchor_part_id, "cfx_p1");
+});
+
+test("reasoning trim (round-13): scaffolding of OLD messages is deletable; newest-K messages, text and tool rows are never touched", () => {
+  const dbFile = path.join(TMP, "reasoning.sqlite");
+  const db = new DatabaseSync(dbFile, { open: true });
+  for (const s of SCHEMA) db.exec(s);
+  db.prepare("INSERT INTO session (id, title) VALUES (?, ?)").run(MAIN, "r");
+  // 4 messages, oldest first; keep=2 ⇒ scaffolding of m1/m2 deletable, m3/m4 kept
+  for (const [mid, ts] of [["m1", 100], ["m2", 200], ["m3", 300], ["m4", 400]])
+    db.prepare("INSERT INTO message (id, session_id, time_created, time_updated, data) VALUES (?, ?, ?, ?, ?)").run(mid, MAIN, ts, ts, JSON.stringify({ role: "assistant" }));
+  const ins = db.prepare("INSERT INTO part (id, message_id, session_id, time_created, time_updated, data, sequence) VALUES (?, ?, ?, ?, ?, ?, NULL)");
+  const mk = (id, mid, type, body) => ins.run(id, mid, MAIN, 1, 1, JSON.stringify({ type, [type === "text" ? "text" : "summary"]: body }));
+  mk("r_old1", "m1", "reasoning", "x".repeat(1000));
+  mk("r_old2", "m2", "step-start", "y");
+  mk("r_new1", "m3", "reasoning", "z".repeat(500));
+  mk("r_new2", "m4", "step-finish", "w");
+  mk("t_old", "m1", "text", "user text stays");
+  mk("tool_old", "m2", "tool", "tool stays"); // type tool with a .summary key is still type tool
+  db.close();
+  const rdb = new DatabaseSync(dbFile, { open: true, readOnly: true });
+  const plan = planReasoningTrim(rdb, MAIN, 2);
+  rdb.close();
+  const ids = new Set(plan.part_ids);
+  assert.ok(ids.has("r_old1") && ids.has("r_old2"), "old scaffolding deletable");
+  assert.ok(!ids.has("r_new1") && !ids.has("r_new2"), "newest-2 messages scaffolding kept");
+  assert.ok(!ids.has("t_old") && !ids.has("tool_old"), "text/tool never in the reasoning plan");
+  assert.equal(plan.rows, 2);
+  assert.ok(plan.bytes >= 1000, "bytes counted");
 });

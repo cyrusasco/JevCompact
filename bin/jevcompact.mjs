@@ -53,6 +53,9 @@
  *                           lost its single carrier is kept (rarity first, recency as
  *                           tie-breaker — the plan-11 refinement). Guarantor: every
  *                           protected entity keeps >= 1 carrier; refuses if not.
+ *   --trim-reasoning       host mode only (round-13, opt-in): delete reasoning/step
+ *                          scaffolding parts of messages older than the newest --keep
+ *                          messages (assistant-internal; user text and tool evidence untouched)
  *   --bookkeeping           host mode only (v1.1, opt-in): clear the stale file-state
  *                           snapshots the Edit tool stores per call (readFileState.content)
  *                           — only the newest snapshot per path is ever consulted, the
@@ -77,7 +80,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 
 /* ------------------------------------------------------------------ argv */
 function parseArgs(argv) {
-  const opts = { files: [], apply: false, inPlace: false, format: "auto", threshold: 0.6, keep: 6, head: 300, pinLast: "critical", policy: true, session: null, restore: null, key: null, goal: null, minReduction: 0.05, maxStateTokens: 25000, maxRequestTokens: 30000, dedup: false, trimCarriers: false, bookkeeping: false };
+  const opts = { files: [], apply: false, inPlace: false, format: "auto", threshold: 0.6, keep: 6, head: 300, pinLast: "critical", policy: true, session: null, restore: null, key: null, goal: null, minReduction: 0.05, maxStateTokens: 25000, maxRequestTokens: 30000, dedup: false, trimCarriers: false, bookkeeping: false, trimReasoning: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (!a.startsWith("--")) { opts.files.push(a); continue; }
@@ -96,6 +99,7 @@ function parseArgs(argv) {
       case "dedup": opts.dedup = true; break;
       case "trim-carriers": opts.trimCarriers = true; break;
       case "bookkeeping": opts.bookkeeping = true; break;
+      case "trim-reasoning": opts.trimReasoning = true; break;
       case "goal": opts.goal = val; break;
       case "min-reduction": opts.minReduction = Number(val); break;
       case "max-state-tokens": opts.maxStateTokens = Number(val); break;
@@ -260,7 +264,7 @@ async function main() {
     const r = await mod.compactZcodeSession(opts.session, {
       apply: opts.apply, keep: opts.keep, threshold: opts.threshold, truncateHead: opts.head, policy: opts.policy, goal: opts.goal ?? undefined,
       minReduction: opts.minReduction, maxStateTokens: opts.maxStateTokens, maxRequestTokens: opts.maxRequestTokens,
-      dedup: opts.dedup, trimCarriers: opts.trimCarriers, bookkeeping: opts.bookkeeping,
+      dedup: opts.dedup, trimCarriers: opts.trimCarriers, bookkeeping: opts.bookkeeping, trimReasoning: opts.trimReasoning,
       log: (m) => console.log(`[${opts.session}] ${m}`),
     });
     if (!r.ok) {
