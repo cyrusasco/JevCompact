@@ -1,3 +1,13 @@
+## 2026-09-29 — floor blind spots + one-click outcome plan (round-14)
+
+- The 5% benign floor now counts EVERY byte the plan frees: reasoning scaffolding
+  AND bookkeeping-cleared snapshot bodies. Previously a 115 MB R1 session holding
+  104 MB of stale snapshots was benign-skipped at a 3.7% transcript ratio — the exact
+  "nothing to delete" false negative users could see.
+- outcome-trim topic suggestions now mine ALL tool rows (console-only filtering left
+  WeChat-bridge-style R1 sessions with zero suggestions) and the Studio panel chains
+  the suggestion straight into the plan — one click total, no typing, no second click.
+
 ## 2026-09-28 — reasoning trim (round-13): the assistant's scaffolding is now compactable
 
 - Measured blind spot: reasoning/step parts (22 % of one 77 MB session) were never read
