@@ -94,7 +94,10 @@ Formats read: Claude Code JSONL (`~/.claude/projects/*/*.jsonl`), Codex rollouts
 - `--dedup` collapses exact duplicate tool results (newest copy survives); `--trim-carriers`
   releases rows kept solely as protected-entity carriers when the entity stays covered;
   `--bookkeeping` clears stale `readFileState.content` bodies (newest snapshot per path
-  stays; older bodies remain recoverable from the paired pre-apply backup).
+  stays; older bodies remain recoverable from the paired pre-apply backup);
+  `--trim-reasoning` deletes reasoning/step scaffolding of messages older than the newest
+  `--keep` — assistant-internal scratch, never user text or tool evidence; auto-triage
+  enables it on ANY tier when the scaffolding share is ≥15% (Studio: 🧠 思考裁剪).
 - Strong I2: every `policy:pin-*` row (final-state AND goal/correction/cause evidence) is
   exempt from the extra passes. The one-carrier-per-entity selection is a separate, weaker
   scheme audited on its own (A3); `A6` is split into I2 (pins kept) and I3 (last-of-group
