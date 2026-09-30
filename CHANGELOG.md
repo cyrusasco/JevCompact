@@ -1,3 +1,15 @@
+## 2026-09-30 — one-click full-auto compact + inline progress + plan preview (round-16)
+
+- Compact is now a single fully-automatic action: after the normal pipeline the outcome-
+  trim runs itself with server-suggested topics (topics_source: auto-suggested recorded in
+  the ledger; Tier-2 stays off; policy-pinned rows excluded). The 成果Dry/成果Apply buttons
+  are gone from the panel (CLI keeps them); 成果還原 stays for undo.
+- The Compact button first shows a LOCAL plan preview (triage class, scaffolding rows/MB,
+  stale-snapshot rows/MB, auto-outcome candidates rows/MB, "your text: 0 rows") via
+  GET /api/preview — real numbers before anything runs, no Jev cost.
+- The progress bar moved inline next to each session row (same cell) with window count,
+  %, and ETA.
+
 ## 2026-09-30 — live progress bar + never-silent failures (round-15)
 
 - The classify loop emits machine-readable per-window progress; the Studio panel shows
