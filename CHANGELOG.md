@@ -1,3 +1,13 @@
+## 2026-09-30 — fixpoint compaction (round-17)
+
+- Root cause of "first click compacts a little, second click a lot": pass gates
+  (e.g. the 15% reasoning-share auto-trim) are measured on the PRE-compact composition,
+  and the write itself flips later gates on. One LINE session measured: click 1 freed
+  1.85 MB (reasoning share 13.4% — below gate); click 2 freed 8.7 MB (share crossed 16%).
+- Fix: auto-triage compaction now loops to a fixpoint — triage → run → re-triage, up to
+  3 iterations, stopping when the pass set is stable or a run refuses. One click reaches
+  the pipeline's own maximum.
+
 ## 2026-09-30 — one-click full-auto compact + inline progress + plan preview (round-16)
 
 - Compact is now a single fully-automatic action: after the normal pipeline the outcome-
