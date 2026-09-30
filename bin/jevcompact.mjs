@@ -80,7 +80,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 
 /* ------------------------------------------------------------------ argv */
 function parseArgs(argv) {
-  const opts = { files: [], apply: false, inPlace: false, format: "auto", threshold: 0.6, keep: 6, head: 300, pinLast: "critical", policy: true, session: null, restore: null, key: null, goal: null, minReduction: 0.05, maxStateTokens: 25000, maxRequestTokens: 30000, dedup: false, trimCarriers: false, bookkeeping: false, trimReasoning: false };
+  const opts = { files: [], apply: false, inPlace: false, format: "auto", threshold: 0.6, keep: 6, head: 300, pinLast: "critical", policy: true, session: null, restore: null, key: null, goal: null, minReduction: 0.05, maxStateTokens: 25000, maxRequestTokens: 30000, dedup: false, trimCarriers: false, bookkeeping: false, trimReasoning: false, contextSlim: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (!a.startsWith("--")) { opts.files.push(a); continue; }
@@ -100,6 +100,7 @@ function parseArgs(argv) {
       case "trim-carriers": opts.trimCarriers = true; break;
       case "bookkeeping": opts.bookkeeping = true; break;
       case "trim-reasoning": opts.trimReasoning = true; break;
+      case "context-slim": opts.contextSlim = true; break;
       case "goal": opts.goal = val; break;
       case "min-reduction": opts.minReduction = Number(val); break;
       case "max-state-tokens": opts.maxStateTokens = Number(val); break;
@@ -264,9 +265,20 @@ async function main() {
     const r = await mod.compactZcodeSession(opts.session, {
       apply: opts.apply, keep: opts.keep, threshold: opts.threshold, truncateHead: opts.head, policy: opts.policy, goal: opts.goal ?? undefined,
       minReduction: opts.minReduction, maxStateTokens: opts.maxStateTokens, maxRequestTokens: opts.maxRequestTokens,
-      dedup: opts.dedup, trimCarriers: opts.trimCarriers, bookkeeping: opts.bookkeeping, trimReasoning: opts.trimReasoning,
+      dedup: opts.dedup, trimCarriers: opts.trimCarriers, bookkeeping: opts.bookkeeping, trimReasoning: opts.trimReasoning, contextSlim: opts.contextSlim,
       log: (m) => console.log(`[${opts.session}] ${m}`),
     });
+    if (opts.contextSlim && r.ok) {
+      try {
+        const ps = await mod.planContextSlimForSession(opts.session, { log: (m) => console.log("[context-slim] " + m) });
+        if (ps.ok && ps.plan) {
+          if (opts.apply) {
+            const asr = await mod.applyContextSlim({ plan: ps.plan, log: (m) => console.log("[context-slim] " + m) });
+            console.log(asr.ok ? "context-slim committed: est " + ps.plan.est.before_tokens.toLocaleString() + " → " + ps.plan.est.after_tokens.toLocaleString() + " tok (−" + ps.plan.est.reduction_pct + "%)" : "context-slim skipped: " + String(asr.error).slice(0, 120));
+          } else console.log("context-slim DRY RUN: est " + ps.plan.est.before_tokens.toLocaleString() + " → " + ps.plan.est.after_tokens.toLocaleString() + " tok (−" + ps.plan.est.reduction_pct + "%)");
+        } else console.log("context-slim plan refused: " + String(ps.error).slice(0, 120));
+      } catch (e) { console.error("context-slim failed: " + (e?.message ?? e)); }
+    }
     if (!r.ok) {
       // a benign refusal (liveness guard, or a plan the policy judged worthless) is a skip, not a failure
       if (r.benign) { console.log(`SKIP (benign): ${r.error}`); return 0; }

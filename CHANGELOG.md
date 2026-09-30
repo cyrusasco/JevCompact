@@ -1,3 +1,19 @@
+## 2026-10-01 — context-slim (round-22): one-click Compact now reaches ~20% context (B+)
+
+- NEW final stage in the one-click pipeline: after the normal passes + auto outcome-trim,
+  a context-slim pass rewrites the session so the model's NEXT request is ~20% of its
+  current size. Measured on an isolated copy of a real R2 session: 3,411,906 to 527,825
+  tok (-84.5% context) / 13.54 to 4.58 MB store (-66.2%), 49 real user-word rows kept
+  100% byte-identical, sentinel sessions untouched.
+- B+ rules (from the 7-session deep review): platform noise (todo-reminders, task-
+  notifications, plugin refs, old summaries, tool replays — 201k tok across 7 sessions)
+  becomes one-line notes; TodoWrite keeps only the LAST snapshot; lesson-carrier + I3
+  critical rows keep head-300 + marker; old exploration becomes one-line notes;
+  assistant conclusions keep newest 15; one synthetic anchor-index line preserves every
+  path/file/hash citable.
+- CLI: --context-slim flag; Studio: runs automatically as the final stage of Compact.
+- Tests: 40/40 (3 new: B+ planner classification, platform-noise regex, apply-restore
+  round-trip with byte-identical user-word verification).
 ## 2026-09-30 — user-facing numbers in real MB (round-18)
 
 - Report and log now speak the same unit as the Size column: real part bytes measured
