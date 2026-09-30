@@ -1,3 +1,11 @@
+## 2026-09-30 — user-facing numbers in real MB (round-18)
+
+- Report and log now speak the same unit as the Size column: real part bytes measured
+  across the WHOLE action (fixpoint loop + auto outcome-trim), shown as
+  「壓縮完成：21.6 MB → 15.1 MB（慳咗 6.5 MB・−30%）」. The old chars/messages rows
+  (classifier-internal numbers that never matched the Size column) are gone; the report
+  lists 大細/慳咗/記錄數/思考裁剪/帳簿清掃/已刪/證據釘住/你的文字 in plain labels.
+
 ## 2026-09-30 — fixpoint compaction (round-17)
 
 - Root cause of "first click compacts a little, second click a lot": pass gates
