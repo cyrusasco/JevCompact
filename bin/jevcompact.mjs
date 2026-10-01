@@ -270,7 +270,7 @@ async function main() {
       dbPath: opts.db, // B1 fix: --db=<path> now works for --session mode (isolated-copy drills)
       log: (m) => console.log(`[${opts.session}] ${m}`),
     });
-    if (opts.contextSlim && r.ok) {
+    if (opts.contextSlim && (r.ok || r.benign)) {
       try {
         const ps = await mod.planContextSlimForSession(opts.session, { dbPath: opts.db, log: (m) => console.log("[context-slim] " + m) });
         if (ps.ok && ps.plan) {
