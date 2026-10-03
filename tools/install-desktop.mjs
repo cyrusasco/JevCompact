@@ -72,7 +72,7 @@ function startupDir() {
 // with spaces (node.exe under "C:\Program Files\…") survive intact.
 const psq = (s) => `'${String(s).replace(/'/g, "''")}'`;
 function batContent() {
-  const script = `Start-Process -FilePath ${psq(NODE_BIN)} -ArgumentList ${psq(`"${STUDIO_APP}" --no-browser`)} -WindowStyle Hidden`;
+  const script = `Start-Process -FilePath ${psq(NODE_BIN)} -ArgumentList ${psq(`"${STUDIO_APP}" --no-browser`)} -WindowStyle Hidden; Start-Process ${psq(URL)}`;
   const enc = Buffer.from(script, "utf16le").toString("base64");
   return [
     "@echo off",
@@ -80,8 +80,6 @@ function batContent() {
     "setlocal",
     `curl -s -f -o nul ${URL} && (start "" "${URL}" & exit /b 0)`,
     `powershell -NoProfile -EncodedCommand ${enc}`,
-    "timeout /t 3 /nobreak >nul",
-    `start "" "${URL}"`,
     "endlocal",
     "",
   ].join("\r\n");

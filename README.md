@@ -2,6 +2,58 @@
 
 **No-rewrite session compaction for LLM agents — optimized for Chinese.**
 
+## Quick Start (3 minutes)
+
+### 1. Install
+```bash
+git clone https://github.com/cyrusasco/JevCompact.git
+cd JevCompact
+npm install
+```
+
+### 2. Set your API key (one time)
+```bash
+# Option A: .env file in the repo root
+echo "TYPESAFE_API_KEY=your-key-here" > .env
+
+# Option B: global
+mkdir -p ~/.jevcompact
+echo "TYPESAFE_API_KEY=your-key-here" > ~/.jevcompact/.env
+```
+
+### 3. Start the desktop app (daemon)
+```bash
+# macOS / Linux
+node lib/jve-studio-app.mjs &
+
+# Windows (or double-click the "Jve Studio" desktop icon after install)
+npm run desktop
+```
+The app opens at **http://127.0.0.1:50505** — keep it running in the background.
+
+### 4. Compact a session (one click)
+1. Click **🔄 Sync** — the panel lists your sessions
+2. Pick a session from the dropdown (or click any row)
+3. Click **🗜 Compact** — confirm the plan preview → done
+
+The pipeline runs automatically: Jev classification → policy pins → outcome-trim →
+context-slim (noise→notes, old tool inputs→signatures, old results→head-300).
+Context drops to **~20-25%** of its pre-compact size. Your words are never touched.
+
+### CLI alternative (no daemon needed)
+```bash
+# dry run
+node bin/jevcompact.mjs --session <session-id>
+
+# apply (with context-slim)
+node bin/jevcompact.mjs --session <session-id> --apply --context-slim
+
+# restore (undo)
+node bin/jevcompact.mjs outcome --restore --ledger=<backup>.outcome-ledger.json
+```
+
+---
+
 Long agent sessions eventually exceed the model's context window (and the proxy's
 request-size limit — 413 "Payload Too Large" is the usual first sign). Every mainstream
 harness (Claude Code `/compact`, Codex auto-compaction, ZCode compaction) resolves this the
